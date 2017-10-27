@@ -1,9 +1,9 @@
-buildscript {
-    repositories { jcenter() }
-    dependencies { classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.1.51' }
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version '1.1.4'
+    id 'org.dm.bundle' version '0.10.0'
+    id 'groovy'
+    id 'maven'
 }
-
-apply plugin: 'kotlin'
 
 group 'org.almibe'
 version '0.1.0-SNAPSHOT'
@@ -16,5 +16,11 @@ repositories {
 dependencies {
     compile 'org.jetbrains.kotlin:kotlin-stdlib:1.1.51'
     compile 'com.google.code.gson:gson:2.8.2'
+    testCompile 'org.codehaus.groovy:groovy-all:2.4.10'
+    testCompile 'org.spockframework:spock-core:1.1-groovy-2.4'
 }
 
+bundle {
+    instruction 'Import-Package', '*'
+    instruction 'Export-Package', 'org.almibe.weaseltemplate'
+}
