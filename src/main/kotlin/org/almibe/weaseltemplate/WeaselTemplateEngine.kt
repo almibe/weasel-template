@@ -1,7 +1,6 @@
 package org.almibe.weaseltemplate
 
 import com.google.gson.JsonObject
-import java.io.FileReader
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
@@ -29,41 +28,6 @@ enum class TokenType {
 }
 
 data class Token(val value: String, val tokenType: TokenType)
-
-class WeaselTemplateLexer(val input: FileReader) {
-    private val EOF: Char = (-1).toChar()
-    private var c: Char = 0.toChar()
-
-//    fun nextToken(): Token {
-//        while(c != EOF) {
-//            when (c) {
-//                '{' -> openCurly()
-//                else -> text()
-//            }
-//        }
-//    }
-
-    fun openCurly() {
-
-        consume()
-        when (c) {
-            //'{' -> escapedOpenCurly()
-
-        }
-    }
-
-    fun text() {
-
-    }
-
-    fun consume() {
-        c = input.read().toChar()
-    }
-}
-
-class WeaselTemplateParser(tokenStream: Stream<Token>) {
-
-}
 
 class WeaselTemplateEngine(private val classLoader: ClassLoader) {
 
