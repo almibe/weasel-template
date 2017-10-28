@@ -41,10 +41,11 @@ class WeaselTemplateEngine(private val classLoader: ClassLoader) {
             val tokenStream = pathToStream(Paths.get(templateUrl.toURI()))
             val cache: List<Cache> = mutableListOf()
             tokenStream.forEach {
-
+                //TODO fill cache list
             }
-            templateCache[templateName] = Template(templateName, cache)
-            templateCache[templateName]?.applyTemplate(data) ?: throw RuntimeException("Error applying template $templateName")
+            val template = Template(templateName, cache)
+            templateCache[templateName] = template
+            template.applyTemplate(data)
         }
     }
 
