@@ -1,5 +1,7 @@
 package org.almibe.weaseltemplate
 
+import com.google.gson.JsonObject
+
 interface Cache
 interface Condition: Cache
 
@@ -12,3 +14,9 @@ data class Else(val content: List<Cache>): Condition
 data class ListLoop(val reference: List<String>, val variableName: String, val content: List<Cache>): Cache
 data class MapLoop(val reference: List<String>, val keyName: String, val valueName: String, val content: List<Cache>): Cache
 data class Include(val reference: List<String>, val content: List<Cache>)
+
+data class Template(val templateName: String, private val content: List<Cache>) {
+    fun applyTemplate(data: JsonObject): String {
+        TODO("implement")
+    }
+}
