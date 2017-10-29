@@ -19,7 +19,7 @@ package org.almibe.weaseltemplate
 import com.google.gson.JsonObject
 import java.util.stream.Stream
 
-class WeaselTemplateEngine(private val classLoader: ClassLoader) {
+class WeaselTemplateEngine {
     private val templateCache: MutableMap<String, NamedTemplate> = mutableMapOf()
     private val lexer = WeaselTemplateLexer()
 

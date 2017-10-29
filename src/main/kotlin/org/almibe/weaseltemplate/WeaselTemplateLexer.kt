@@ -22,7 +22,7 @@ class WeaselTemplateLexer {
 
     private data class TokenizingInstanceValues(
             val consumed: StringBuilder = StringBuilder(),
-            val tokens: MutableList<PartialTemplate> = mutableListOf(),
+            val partialTemplates: MutableList<PartialTemplate> = mutableListOf(),
             val lineNumber: Int = 0
     )
 
@@ -39,7 +39,7 @@ class WeaselTemplateLexer {
                 }
             }
         }
-        return instanceValues.tokens
+        return instanceValues.partialTemplates
     }
   
     private fun checkTag(iterator: CharIterator, instanceValues: TokenizingInstanceValues) {
@@ -61,7 +61,7 @@ class WeaselTemplateLexer {
     private fun addTextToken(instanceValues: TokenizingInstanceValues) {
         val tokenValue = instanceValues.consumed.toString()
         instanceValues.consumed.setLength(0) //clear
-        instanceValues.tokens.add(TextTemplate(tokenValue))
+        instanceValues.partialTemplates.add(TextTemplate(tokenValue))
     }
 
     private fun readWeaselTemplateTag(iterator: CharIterator, instanceValues: TokenizingInstanceValues) {

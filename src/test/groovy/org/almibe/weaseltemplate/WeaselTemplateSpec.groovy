@@ -19,49 +19,72 @@ package org.almibe.weaseltemplate
 import spock.lang.Specification
 
 class WeaselTemplateSpec extends Specification {
+    def templateEngine = new WeaselTemplateEngine()
+
+    def simple = ['', 'test', 'multi word test', '$5 = $5']
+    def html = ['<hr>', 'This is a <test>.', '$', '$$$']
+    def scalar = ['<$test>', '<$data.test>', '$<$data.test1.test2>']
+    def ifs = []
+    def nestedIfs = []
+    def fullIfElse = []
+    def iterateList = []
+    def iterateMap = []
+
+    //TODO define all test data here inline as a list so .stream can be called
+    //TODO delete all test files
+
     def "handle empty files"() {
+        given:
+        def lines = simple.stream()
+        when:
+        String result = templateEngine.applyTemplate("01-emptyFile.wtf", lines, null)
+        then:
+        result.readLines().stream()
     }
 
     def "handle empty templates"() {
+
     }
 
     def "handle template data with empty templates"() {
-    }
-
-    def "handle empty htmls files"() {
-    }
-
-    def "support basic variables"() {
-    }
-
-    def "supported nested variables"() {
-    }
-
-    def "expect an exception when you pass list or map data to a singular reference"() {
-    }
-
-    def "test passing list data to a list references"() {
-    }
-
-    def "expect an exception when you pass map or singular values to list references"() {
 
     }
 
-    def "test passing map data to a map references"() {
+    def "handle empty html files"() {
+
     }
 
-    def "expect an exception when you pass list or singular values to map references"() {
-    }
-
-    def "support simple if conditions"() {
-    }
-
-    def "support full if else conditions"() {
-    }
-
-    def "support nested conditions"() {
-    }
-
-    def "support includes"() {
-    }
+//    def "support basic variables"() {
+//    }
+//
+//    def "supported nested variables"() {
+//    }
+//
+//    def "expect an exception when you pass list or map data to a singular reference"() {
+//    }
+//
+//    def "test passing list data to a list references"() {
+//    }
+//
+//    def "expect an exception when you pass map or singular values to list references"() {
+//
+//    }
+//
+//    def "test passing map data to a map references"() {
+//    }
+//
+//    def "expect an exception when you pass list or singular values to map references"() {
+//    }
+//
+//    def "support simple if conditions"() {
+//    }
+//
+//    def "support full if else conditions"() {
+//    }
+//
+//    def "support nested conditions"() {
+//    }
+//
+//    def "support includes"() {
+//    }
 }
