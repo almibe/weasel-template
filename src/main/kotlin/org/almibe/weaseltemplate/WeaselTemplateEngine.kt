@@ -17,17 +17,20 @@
 package org.almibe.weaseltemplate
 
 import com.google.gson.JsonObject
-import java.util.stream.Stream
+import java.nio.file.Files
+import java.nio.file.Paths
 
-class WeaselTemplateEngine {
+class WeaselTemplateEngine(private val classLoader: ClassLoader) {
     private val templateCache: MutableMap<String, NamedTemplate> = mutableMapOf()
     private val lexer = WeaselTemplateLexer()
 
-    fun processTemplate(templateName: String, lines: Stream<String>, data: JsonObject): String {
+    fun processTemplate(templateName: String, data: JsonObject): String {
         val template = templateCache[templateName]
         return if (template != null) {
             applyTemplate(template, data)
         } else {
+            val path = Paths.get(classLoader.getResource(templateName).toURI())
+            val lines = Files.lines(path)
             val tokens = lexer.tokenize(lines)
             val newTemplate = NamedTemplate(templateName, tokens)
             templateCache[templateName] = newTemplate

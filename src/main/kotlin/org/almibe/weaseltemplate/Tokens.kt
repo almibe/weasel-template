@@ -28,8 +28,18 @@ interface Condition: PartialTemplate //TODO is this needed?
  * A TextTemplate simply represents an uninterpreted block of text.  The data object isn't used
  * in the appendResult method at all.
  */
-class TextTemplate(val data: String): PartialTemplate {
+class TextTemplate(private val textContent: String): PartialTemplate {
     override fun appendResult(data: JsonObject, stringBuilder: StringBuilder) {
+        stringBuilder.append(textContent)
+    }
+}
+
+/**
+ * A ScalarTemplate is passed a namespaced name and uses that name to access a scala value from the data JSONObject.
+ */
+class ScalarTemplate(private val name: List<String>): PartialTemplate {
+    override fun appendResult(data: JsonObject, stringBuilder: StringBuilder) {
+        data.get(name.joinToString(".")) //TODO I don't think this works and I have to loop calls to get
         stringBuilder.append(data)
     }
 }
@@ -44,6 +54,8 @@ data class NamedTemplate(val templateName: String, private val content: List<Par
     }
 }
 
+//data class IfTemplate()...
+
 //class Interpretation(val reference: List<String>): Token
 //class Conditional(val conditions: List<Condition>): Token
 //class If(val reference: List<String>, val content: List<Token>): Condition
@@ -54,11 +66,6 @@ data class NamedTemplate(val templateName: String, private val content: List<Par
 //class Include(val reference: List<String>, val content: List<Token>)
 //
 //enum class TokenType {
-//    STRING,
-//    OPEN_CURLY,
-//    ESCAPED_OPEN_CURLY,
-//    CLOSE_CURLY,
-//    ESCAPED_CLOSE_CURLY,
 //    IF,
 //    ELSEIF,
 //    ELSE,

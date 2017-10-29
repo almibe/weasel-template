@@ -99,6 +99,10 @@ class WeaselTemplateLexer {
         }
     }
 
+    private fun createScalarToken(tagTokens: List<String>, instanceValues: TokenizingInstanceValues) {
+        TODO("finish")
+    }
+
     private fun createIfToken(tagTokens: List<String>, instanceValues: TokenizingInstanceValues) {
         TODO("finish")
     }
@@ -120,10 +124,6 @@ class WeaselTemplateLexer {
     }
 
     private fun createEndToken(tagTokens: List<String>, instanceValues: TokenizingInstanceValues) {
-        TODO("finish")
-    }
-
-    private fun createScalarToken(tagTokens: List<String>, instanceValues: TokenizingInstanceValues) {
         TODO("finish")
     }
 }
