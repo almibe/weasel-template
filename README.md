@@ -43,7 +43,8 @@ Template files are regular text files with Weasel Template markup wrapped in `<$
 ## Kotlin API
 
 ```kotlin
-val engine = WeaselTemplateEngine(this.class) //you can/probably should reuse this
+val engine = WeaselTemplateEngine() //cache is only in use if engine instance is reused
 val data = //create JSON object
-val result = engine.process('templatename.wt', data)
+val lines = //read in or supply a Stream<String>
+val result = engine.process('templatename.wt', lines, data)
 ```

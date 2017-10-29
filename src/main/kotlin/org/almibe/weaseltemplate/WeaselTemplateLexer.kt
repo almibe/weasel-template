@@ -19,7 +19,7 @@ package org.almibe.weaseltemplate
 import java.util.stream.Stream
 
 class WeaselTemplateLexer {
-
+    val specialCharacter = '$'
     private data class TokenizingInstanceValues(
             val consumed: StringBuilder = StringBuilder(),
             val partialTemplates: MutableList<PartialTemplate> = mutableListOf(),
@@ -45,7 +45,7 @@ class WeaselTemplateLexer {
     private fun checkTag(iterator: CharIterator, instanceValues: TokenizingInstanceValues) {
         if (iterator.hasNext()) {
             val nextCharacter = iterator.nextChar()
-            if (nextCharacter == '$') {
+            if (nextCharacter == specialCharacter) {
                 if (!instanceValues.consumed.isEmpty()) { //if there is already a text token being build up add it
                     addTextToken(instanceValues)
                 }
@@ -73,7 +73,7 @@ class WeaselTemplateLexer {
             "include" -> createIncludeToken(tagTokens, instanceValues)
             "each" -> createEachToken(tagTokens, instanceValues)
             "end" -> createEndToken(tagTokens, instanceValues)
-            else -> createValueToken(tagTokens, instanceValues)
+            else -> createScalarToken(tagTokens, instanceValues)
         }
     }
 
@@ -123,7 +123,7 @@ class WeaselTemplateLexer {
         TODO("finish")
     }
 
-    private fun createValueToken(tagTokens: List<String>, instanceValues: TokenizingInstanceValues) {
+    private fun createScalarToken(tagTokens: List<String>, instanceValues: TokenizingInstanceValues) {
         TODO("finish")
     }
 }

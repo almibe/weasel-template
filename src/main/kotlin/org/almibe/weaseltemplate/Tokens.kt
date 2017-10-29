@@ -22,16 +22,24 @@ interface PartialTemplate {
     fun appendResult(data: JsonObject, stringBuilder: StringBuilder)
 }
 
-interface Condition: PartialTemplate
+interface Condition: PartialTemplate //TODO is this needed?
 
+/**
+ * A TextTemplate simply represents an uninterpreted block of text.  The data object isn't used
+ * in the appendResult method at all.
+ */
 class TextTemplate(val data: String): PartialTemplate {
     override fun appendResult(data: JsonObject, stringBuilder: StringBuilder) {
-        TODO("not implemented")
+        stringBuilder.append(data)
     }
 }
 
+/**
+ * A NamedTemplate is template made up of multiple PartialTemplates and given a name for referencing in the cache.
+ */
 data class NamedTemplate(val templateName: String, private val content: List<PartialTemplate>): PartialTemplate {
     override fun appendResult(data: JsonObject, stringBuilder: StringBuilder) {
+        //TODO maybe use collect here
         TODO("not implemented")
     }
 }
@@ -46,7 +54,6 @@ data class NamedTemplate(val templateName: String, private val content: List<Par
 //class Include(val reference: List<String>, val content: List<Token>)
 //
 //enum class TokenType {
-//    TEXT
 //    STRING,
 //    OPEN_CURLY,
 //    ESCAPED_OPEN_CURLY,
