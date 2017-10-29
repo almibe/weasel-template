@@ -16,34 +16,20 @@
 
 package org.almibe.weaseltemplate
 
-import java.nio.file.Files
-import java.nio.file.Paths
 import java.util.stream.Stream
 
 class WeaselTemplateLexer {
-    private val cache: Map<String, List<Token>> = mutableMapOf() //only shared variable
 
     private data class TokenizingInstanceValues(
-        val input: Stream<String>,
-        val consumed: StringBuilder = StringBuilder(),
-        val tokens: MutableList<Token> = mutableListOf(),
-        val lineNumber: Int = 0
+            val input: Stream<String>,
+            val consumed: StringBuilder = StringBuilder(),
+            val tokens: MutableList<PartialTemplate> = mutableListOf(),
+            val lineNumber: Int = 0
     )
 
-    fun tokenize(fileName: String): List<Token> {
-        val cacheValue = cache[fileName]
-        return if (cacheValue != null) {
-            cacheValue
-        } else {
-            handleTokenizing(fileName)
-        }
-    }
-
-    private fun handleTokenizing(fileName: String): List<Token> {
-        val path = Paths.get(fileName)
-        val input = Files.lines(path)
-        val instanceValues = WeaselTemplateLexer.TokenizingInstanceValues(input)
-        input.forEach { line: String ->
+    fun tokenize(lines: Stream<String>): List<PartialTemplate> {
+        val instanceValues = WeaselTemplateLexer.TokenizingInstanceValues(lines)
+        lines.forEach { line: String ->
             val iterator = line.toCharArray().iterator()
             while (iterator.hasNext()) {
                 val nextCharacter = iterator.nextChar()
@@ -76,7 +62,7 @@ class WeaselTemplateLexer {
     private fun addTextToken(instanceValues: TokenizingInstanceValues) {
         val tokenValue = instanceValues.consumed.toString()
         instanceValues.consumed.setLength(0) //clear
-        instanceValues.tokens.add(Token(TokenType.TEXT, tokenValue))
+        instanceValues.tokens.add(TextTemplate(tokenValue))
     }
 
     private fun readWeaselTemplateTag(iterator: CharIterator, instanceValues: TokenizingInstanceValues) {

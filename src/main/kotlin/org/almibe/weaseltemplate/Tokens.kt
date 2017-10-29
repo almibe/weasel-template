@@ -16,8 +16,37 @@
 
 package org.almibe.weaseltemplate
 
-enum class TokenType {
-    TEXT
+import com.google.gson.JsonObject
+
+interface PartialTemplate {
+    fun appendResult(data: JsonObject, stringBuilder: StringBuilder)
+}
+
+interface Condition: PartialTemplate
+
+class TextTemplate(val data: String): PartialTemplate {
+    override fun appendResult(data: JsonObject, stringBuilder: StringBuilder) {
+        TODO("not implemented")
+    }
+}
+
+data class NamedTemplate(val templateName: String, private val content: List<PartialTemplate>): PartialTemplate {
+    override fun appendResult(data: JsonObject, stringBuilder: StringBuilder) {
+        TODO("not implemented")
+    }
+}
+
+//class Interpretation(val reference: List<String>): Token
+//class Conditional(val conditions: List<Condition>): Token
+//class If(val reference: List<String>, val content: List<Token>): Condition
+//class ElseIf(val reference: List<String>, val content: List<Token>): Condition
+//class Else(val content: List<Token>): Condition
+//class ListLoop(val reference: List<String>, val variableName: String, val content: List<Token>): Token
+//class MapLoop(val reference: List<String>, val keyName: String, val valueName: String, val content: List<Token>): Token
+//class Include(val reference: List<String>, val content: List<Token>)
+//
+//enum class TokenType {
+//    TEXT
 //    STRING,
 //    OPEN_CURLY,
 //    ESCAPED_OPEN_CURLY,
@@ -36,6 +65,4 @@ enum class TokenType {
 //    VALUE_NAME,
 //    TEMPLATE_NAME,
 //    EOL
-}
-
-data class Token(val tokenType: TokenType, val value: String)
+//}

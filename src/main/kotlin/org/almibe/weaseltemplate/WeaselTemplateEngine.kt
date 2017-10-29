@@ -17,67 +17,25 @@
 package org.almibe.weaseltemplate
 
 import com.google.gson.JsonObject
-import java.nio.file.Files
-import java.nio.file.Path
-import java.nio.file.Paths
 import java.util.stream.Stream
 
 class WeaselTemplateEngine(private val classLoader: ClassLoader) {
-    private val templateCache: MutableMap<String, Template> = mutableMapOf()
+    private val templateCache: MutableMap<String, NamedTemplate> = mutableMapOf()
+    private val lexer = WeaselTemplateLexer()
 
-    fun processTemplate(templateName: String, data: JsonObject): String {
+    fun processTemplate(templateName: String, lines: Stream<String>, data: JsonObject): String {
         val template = templateCache[templateName]
         return if (template != null) {
-            template.applyTemplate(data)
+            applyTemplate(template, data)
         } else {
-            val templateUrl = classLoader.getResource(templateName)
-            val tokenStream = pathToStream(Paths.get(templateUrl.toURI()))
-            val cache: List<Cache> = mutableListOf()
-            val iterator = tokenStream.iterator()
-            while(iterator.hasNext()) {
-                val token = iterator.next()
-                when(token) {
-                    //TODO fill cache list
-                }
-            }
-            val template = Template(templateName, cache)
-            templateCache[templateName] = template
-            template.applyTemplate(data)
+            val tokens = lexer.tokenize(lines)
+            val newTemplate = NamedTemplate(templateName, tokens)
+            templateCache[templateName] = newTemplate
+            applyTemplate(newTemplate, data)
         }
     }
 
-    //rules
-    fun string() {
-
-    }
-
-    fun conditional() {
-
-    }
-
-    fun listLoop() {
-
-    }
-
-    fun mapLoop() {
-
-    }
-
-    fun include() {
-
-    }
-
-    private fun pathToStream(path: Path): Stream<Token> = Files.lines(path).flatMap { line: String ->
-        val tokens = mutableListOf<Token>()
-//        val iterator = line.toCharArray().iterator()
-//        while(iterator.hasNext()) {
-//            val char = iterator.nextChar()
-//            tokens.addAll(when (char) {
-//                '{' -> handleOpenCurly(iterator)
-//                '}' -> handleCloseCurly(iterator)
-//                else -> handleText(iterator)
-//            })
-//        }
-        tokens.stream()
+    private fun applyTemplate(template: NamedTemplate, data: JsonObject): String {
+        TODO("implement")
     }
 }
