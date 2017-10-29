@@ -22,9 +22,7 @@ import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.stream.Stream
 
-
 class WeaselTemplateEngine(private val classLoader: ClassLoader) {
-
     private val templateCache: MutableMap<String, Template> = mutableMapOf()
 
     fun processTemplate(templateName: String, data: JsonObject): String {
