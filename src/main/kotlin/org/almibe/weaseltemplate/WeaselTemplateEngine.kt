@@ -1,3 +1,19 @@
+/*
+ * Copyright 2017 Alex Berry
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.almibe.weaseltemplate
 
 import com.google.gson.JsonObject
@@ -8,27 +24,28 @@ import java.util.*
 import java.util.stream.Stream
 
 enum class TokenType {
-    STRING,
-    OPEN_CURLY,
-    ESCAPED_OPEN_CURLY,
-    CLOSE_CURLY,
-    ESCAPED_CLOSE_CURLY,
-    IF,
-    ELSEIF,
-    ELSE,
-    CLOSE_IF,
-    EACH,
-    CLOSE_EACH,
-    AS,
-    REFERENCE,
-    LOOP_NAME,
-    KEY_NAME,
-    VALUE_NAME,
-    TEMPLATE_NAME,
-    EOL
+    TEXT
+//    STRING,
+//    OPEN_CURLY,
+//    ESCAPED_OPEN_CURLY,
+//    CLOSE_CURLY,
+//    ESCAPED_CLOSE_CURLY,
+//    IF,
+//    ELSEIF,
+//    ELSE,
+//    CLOSE_IF,
+//    EACH,
+//    CLOSE_EACH,
+//    AS,
+//    REFERENCE,
+//    LOOP_NAME,
+//    KEY_NAME,
+//    VALUE_NAME,
+//    TEMPLATE_NAME,
+//    EOL
 }
 
-data class Token(val value: String, val tokenType: TokenType)
+data class Token(val tokenType: TokenType, val value: String)
 
 class WeaselTemplateEngine(private val classLoader: ClassLoader) {
 
@@ -110,17 +127,18 @@ class WeaselTemplateEngine(private val classLoader: ClassLoader) {
     }
 
     private fun handleOpenCurly(iterator: CharIterator): List<Token> {
-        if (iterator.hasNext()) {
-            val char = iterator.ignoreWS()
-            when (char) {
-                '{' -> return listOf(Token("{", TokenType.ESCAPED_OPEN_CURLY))
-                'i' -> return handleIfOrReference(iterator)
-                'e' -> return handleEachOrReference(iterator)
-                else -> return handleReference(iterator)
-            }
-        } else {
-            throw RuntimeException("Error parsing template")
-        }
+        TODO()
+//        if (iterator.hasNext()) {
+//            val char = iterator.ignoreWS()
+//            when (char) {
+//                '{' -> return listOf(Token("{", TokenType.ESCAPED_OPEN_CURLY))
+//                'i' -> return handleIfOrReference(iterator)
+//                'e' -> return handleEachOrReference(iterator)
+//                else -> return handleReference(iterator)
+//            }
+//        } else {
+//            throw RuntimeException("Error parsing template")
+//        }
     }
 
     private fun handleCloseCurly(iterator: CharIterator): List<Token> {
