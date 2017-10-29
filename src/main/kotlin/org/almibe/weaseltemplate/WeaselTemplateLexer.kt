@@ -15,7 +15,7 @@ class WeaselTemplateLexer() {
     }
   }
   
-  fun handleLexing(val fileName: String): List<Token> {
+  fun handleTokenize(val fileName: String): List<Token> {
     val index = readFile(fileName)
     while input has next {
       val nextCharacter = input.read()
