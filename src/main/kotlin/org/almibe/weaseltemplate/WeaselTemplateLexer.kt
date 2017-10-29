@@ -21,14 +21,13 @@ import java.util.stream.Stream
 class WeaselTemplateLexer {
 
     private data class TokenizingInstanceValues(
-            val input: Stream<String>,
             val consumed: StringBuilder = StringBuilder(),
             val tokens: MutableList<PartialTemplate> = mutableListOf(),
             val lineNumber: Int = 0
     )
 
     fun tokenize(lines: Stream<String>): List<PartialTemplate> {
-        val instanceValues = WeaselTemplateLexer.TokenizingInstanceValues(lines)
+        val instanceValues = WeaselTemplateLexer.TokenizingInstanceValues()
         lines.forEach { line: String ->
             val iterator = line.toCharArray().iterator()
             while (iterator.hasNext()) {
@@ -66,7 +65,7 @@ class WeaselTemplateLexer {
     }
 
     private fun readWeaselTemplateTag(iterator: CharIterator, instanceValues: TokenizingInstanceValues) {
-        val tagTokens: List<String> = readTagTokens(iterator, instanceValues)
+        val tagTokens: List<String> = splitTagText(iterator, instanceValues)
         when (tagTokens.first()) {
             "if" -> createIfToken(tagTokens, instanceValues)
             "elseif" -> createElseIfToken(tagTokens, instanceValues)
@@ -79,9 +78,9 @@ class WeaselTemplateLexer {
     }
 
     /**
-    * Returns a list of tokens that are in the current tag.
+    * Returns a list of strings that represent current tag.
     */
-    private fun readTagTokens(iterator: CharIterator, instanceValues: TokenizingInstanceValues): List<String> {
+    private fun splitTagText(iterator: CharIterator, instanceValues: TokenizingInstanceValues): List<String> {
         while (iterator.hasNext()) {
             val nextToken = iterator.nextChar()
             if (nextToken != '>') {
