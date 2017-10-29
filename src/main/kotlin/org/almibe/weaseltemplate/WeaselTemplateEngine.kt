@@ -36,6 +36,8 @@ class WeaselTemplateEngine(private val classLoader: ClassLoader) {
     }
 
     private fun applyTemplate(template: NamedTemplate, data: JsonObject): String {
-        TODO("implement")
+        val sb = StringBuilder()
+        template.appendResult(data, sb)
+        return sb.toString()
     }
 }
