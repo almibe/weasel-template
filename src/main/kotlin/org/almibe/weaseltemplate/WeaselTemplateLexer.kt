@@ -1,21 +1,23 @@
 class WeaselTemplateLexer() {
-  val cache: Map<String: List<Token>> = mutableMapOf()
+  val cache: Map<String: List<Token>> = mutableMapOf() //only shared variable
 
-  //Lexer class fields
-  private val consumed = stringbuilder()
-  private val input = ...
-  private val tokens = mutableListOf<Token>
-  private val lineNumber = 0
+  data class TokenizingInstanceValues(
+    val consumed: StringBuilder,
+    val input: ...
+    val tokens: mutableListOf<Token>
+    val lineNumber: 0
+  }
 
   fun lex(val fileName: String): List<Token> {
+    val instanceValues = TokenizingInstanceValues()
     return if (cache.contains(fileName) {
       cache.get(fileName)
     } else {
-      handleLexing(fileName)
+      handleTokenizing(fileName, instanceValues)
     }
   }
   
-  fun handleTokenize(val fileName: String): List<Token> {
+  fun handleTokenize(val fileName: String, val instanceValues: TokenizingInstanceValues): List<Token> {
     val index = readFile(fileName)
     while input has next {
       val nextCharacter = input.read()
@@ -27,7 +29,7 @@ class WeaselTemplateLexer() {
     }
   }
   
-  fun checkTag() {
+  fun checkTag(val instanceValues: TokenizingInstanceValues) {
     if (input.hasNext()) { 
       val nextCharacter = input.read()
       if (nextCharacter == '$') {
@@ -43,13 +45,13 @@ class WeaselTemplateLexer() {
     }
   }
 
-  fun addTextToken() {
+  fun addTextToken(val instanceValues: TokenizingInstanceValues) {
     val tokenValue = consumed.toString()
     consumed.clear()
     tokens.add(new TextToken(tokenValue))
   }
 
-  fun readWeaselTemplateTag() {
+  fun readWeaselTemplateTag(val instanceValues: TokenizingInstanceValues) {
     while (input.hasNext()) {
       val tagTokens: List<String> = readTagTokens()
       when (tagTokens.first) {
@@ -67,7 +69,7 @@ class WeaselTemplateLexer() {
   /**
   * Returns a list of tokens that are in the current tag.
   */
-  fun readTagTokens(): List<String> {
+  fun readTagTokens(val instanceValues: TokenizingInstanceValues): List<String> {
     while (input.hasNext()) {
       val nextToken = input.read()
       if (nextToken != '>') {
@@ -85,31 +87,31 @@ class WeaselTemplateLexer() {
     }
   }
 
-  fun createIfToken() {
+  fun createIfToken(val instanceValues: TokenizingInstanceValues) {
     TODO("finish")
   }
 
-  fun createElseIfToken() {
+  fun createElseIfToken(val instanceValues: TokenizingInstanceValues) {
     TODO("finish")
   }
 
-  fun createElseToken() {
+  fun createElseToken(val instanceValues: TokenizingInstanceValues) {
     TODO("finish")
   }
 
-  fun createIncludeToken() {
+  fun createIncludeToken(val instanceValues: TokenizingInstanceValues) {
     TODO("finish")
   }
 
-  fun createEachToken() {
+  fun createEachToken(val instanceValues: TokenizingInstanceValues) {
     TODO("finish")
   }
 
-  fun createEndToken() {
+  fun createEndToken(val instanceValues: TokenizingInstanceValues) {
     TODO("finish")
   }
 
-  fun createValueToken() {
+  fun createValueToken(val instanceValues: TokenizingInstanceValues) {
     TODO("finish")
   }
 }
