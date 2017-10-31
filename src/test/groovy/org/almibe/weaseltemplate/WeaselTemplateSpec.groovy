@@ -19,7 +19,7 @@ package org.almibe.weaseltemplate
 import spock.lang.Specification
 
 class WeaselTemplateSpec extends Specification {
-    def templateEngine = new WeaselTemplateEngine()
+    def templateEngine = new WeaselTemplateEngine(this.class.classLoader)
 
     def simple = ['', 'test', 'multi word test', '$5 = $5']
     def html = ['<hr>', 'This is a <test>.', '$', '$$$']
