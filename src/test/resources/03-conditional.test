@@ -1,0 +1,22 @@
+This should be visible
+<$if adminUser>
+Admin user
+<$else>
+Not and admin user
+<$end if>
+
+<$if name><$name><$end if>
+
+<$if nested>
+  <$if nested.boolean>
+    Hey
+  <$end if>
+<$end if>
+
+<$if false>
+  This won't print.
+<$elseif true>
+  This will print.
+<$else>
+  This won't print.
+<$end if>
