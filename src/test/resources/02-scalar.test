@@ -1,5 +1,5 @@
-<$data.name>
-$<$data.name>$
-<$data.name> with text.
-<$data.name> is <$data.age>.
-<$data.address.city>
+<$name>
+$<$name>$
+<$name> with text.
+<$name> is <$age>.
+<$address.city>

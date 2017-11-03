@@ -51,7 +51,7 @@ class WeaselTemplateLexer {
             val nextCharacter = iterator.nextChar()
             if (nextCharacter == specialCharacter) {
                 if (!instanceValues.consumed.isEmpty()) { //if there is already a text token being build up add it
-                    addTextToken(instanceValues)
+                    createTextToken(instanceValues)
                 }
                 readWeaselTemplateTag(iterator, instanceValues)
             } else {
@@ -60,12 +60,6 @@ class WeaselTemplateLexer {
         } else {
             throw RuntimeException("Invalid starting tag at end of file.")
         }
-    }
-
-    private fun addTextToken(instanceValues: TokenizingInstanceValues) {
-        val tokenValue = instanceValues.consumed.toString()
-        instanceValues.consumed.setLength(0) //clear
-        instanceValues.partialTemplates.add(TextTemplate(tokenValue))
     }
 
     private fun readWeaselTemplateTag(iterator: CharIterator, instanceValues: TokenizingInstanceValues) {
@@ -103,8 +97,15 @@ class WeaselTemplateLexer {
         }
     }
 
+    private fun createTextToken(instanceValues: TokenizingInstanceValues) {
+        val tokenValue = instanceValues.consumed.toString()
+        instanceValues.consumed.setLength(0) //clear
+        instanceValues.partialTemplates.add(TextTemplate(tokenValue))
+    }
+
     private fun createScalarToken(tagTokens: List<String>, instanceValues: TokenizingInstanceValues) {
-        TODO("finish")
+        assert(tagTokens.size == 1)
+        instanceValues.partialTemplates.add(ScalarTemplate(tagTokens.first()))
     }
 
     private fun createIfToken(tagTokens: List<String>, instanceValues: TokenizingInstanceValues) {

@@ -37,10 +37,20 @@ class TextTemplate(private val textContent: String): PartialTemplate {
 /**
  * A ScalarTemplate is passed a namespaced name and uses that name to access a scala value from the data JSONObject.
  */
-class ScalarTemplate(private val name: List<String>): PartialTemplate {
+class ScalarTemplate(private val name: String): PartialTemplate {
     override fun appendResult(data: JsonObject, stringBuilder: StringBuilder) {
-        data.get(name.joinToString(".")) //TODO I don't think this works and I have to loop calls to get
-        stringBuilder.append(data)
+        val names = name.split(".")
+        var current: JsonObject = data
+        names.forEach {
+            val element = current.get(it)
+            if (element.isJsonObject) {
+                current = element as JsonObject
+            } else if (element.isJsonPrimitive && names.last() == it) {
+                stringBuilder.append(element.asString)
+            } else {
+                throw RuntimeException("Unexpected value")
+            }
+        }
     }
 }
 
