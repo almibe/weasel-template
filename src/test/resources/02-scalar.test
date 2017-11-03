@@ -1,4 +1,5 @@
-<$data.test>
-<$data.test> with text.
-<$data.test> with <$data.test>.
-$<$data.test1.test2>
+<$data.name>
+$<$data.name>$
+<$data.name> with text.
+<$data.name> is <$data.age>.
+<$data.address.city>

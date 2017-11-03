@@ -19,7 +19,7 @@ package org.almibe.weaseltemplate
 import java.util.stream.Stream
 
 class WeaselTemplateLexer {
-    val specialCharacter = '$'
+    private val specialCharacter = '$'
     private data class TokenizingInstanceValues(
             val consumed: StringBuilder = StringBuilder(),
             val partialTemplates: MutableList<PartialTemplate> = mutableListOf(),

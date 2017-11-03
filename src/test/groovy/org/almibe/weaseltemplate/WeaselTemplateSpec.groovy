@@ -28,7 +28,11 @@ class WeaselTemplateSpec extends Specification {
     @Shared JsonObject data = new JsonObject()
 
     def setup() {
-        data.addProperty("test", "Test")
+        data.addProperty("name", "Alex")
+        data.addProperty("age", 32)
+        def address = new JsonObject()
+        address.addProperty("city", "Bloomington")
+        data.add("address", address)
     }
 
     def "test basic tokenizing"() {
@@ -50,26 +54,21 @@ class WeaselTemplateSpec extends Specification {
         expectedResult == result
     }
 
-    def "handle empty templates"() {
-
+    def "support basic variables"() {
+        given:
+        String expectedResult = new File("src/test/resources/02-scalar.result").text
+        when:
+        String result = templateEngine.processTemplate("02-scalar.test", data)
+        then:
+        expectedResult == result
     }
 
-    def "handle template data with empty templates"() {
-
+    def "expect an exception when you pass list or map data to a singular reference"() {
+        when:
+        templateEngine.processTemplate("02-scalar.test", data)
+        then:
+        thrown(RuntimeException)
     }
-
-    def "handle empty html files"() {
-
-    }
-
-//    def "support basic variables"() {
-//    }
-//
-//    def "supported nested variables"() {
-//    }
-//
-//    def "expect an exception when you pass list or map data to a singular reference"() {
-//    }
 //
 //    def "test passing list data to a list references"() {
 //    }
