@@ -20,12 +20,25 @@ import com.google.gson.JsonObject
 import spock.lang.Shared
 import spock.lang.Specification
 
+import java.nio.file.Files
+import java.nio.file.Paths
+
 class WeaselTemplateSpec extends Specification {
     @Shared def templateEngine = new WeaselTemplateEngine(this.class.classLoader)
     @Shared JsonObject data = new JsonObject()
 
     def setup() {
         data.addProperty("test", "Test")
+    }
+
+    def "test basic tokenizing"() {
+        given:
+        WeaselTemplateLexer lexer = new WeaselTemplateLexer()
+        when:
+        List<PartialTemplate> tokens = lexer.tokenize(Files.lines(Paths.get("src/test/resources/01-text.result")))
+        then:
+        tokens.size() == 1
+        tokens.first() instanceof TextTemplate
     }
 
     def "handle plain files"() {
