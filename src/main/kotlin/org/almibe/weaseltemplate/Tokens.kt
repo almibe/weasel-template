@@ -90,25 +90,23 @@ class ElseTemplate(private val content: List<PartialTemplate>): PartialTemplate 
     }
 }
 
-//class ListLoop(val reference: List<String>, val variableName: String, val content: List<Token>): Token
-//class MapLoop(val reference: List<String>, val keyName: String, val valueName: String, val content: List<Token>): Token
-//class Include(val reference: List<String>, val content: List<Token>)
-//
-//enum class TokenType {
-//    IF,
-//    ELSEIF,
-//    ELSE,
-//    CLOSE_IF,
-//    EACH,
-//    CLOSE_EACH,
-//    AS,
-//    REFERENCE,
-//    LOOP_NAME,
-//    KEY_NAME,
-//    VALUE_NAME,
-//    TEMPLATE_NAME,
-//    EOL
-//}
+class ListLoop(val reference: List<String>, val variableName: String, val content: List<PartialTemplate>): PartialTemplate {
+    override fun appendResult(data: JsonObject, stringBuilder: StringBuilder) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+}
+
+class MapLoop(val reference: List<String>, val keyName: String, val valueName: String, val content: List<PartialTemplate>): PartialTemplate {
+    override fun appendResult(data: JsonObject, stringBuilder: StringBuilder) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+}
+
+class Include(val reference: List<String>, val content: List<PartialTemplate>): PartialTemplate {
+    override fun appendResult(data: JsonObject, stringBuilder: StringBuilder) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+}
 
 /**
  * A NamedTemplate is template made up of multiple PartialTemplates and given a name for referencing in the cache.
