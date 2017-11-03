@@ -38,10 +38,14 @@ class WeaselTemplateLexer {
                     instanceValues.consumed.append(nextCharacter)
                 }
             }
+            instanceValues.consumed.append("\n")
+        }
+        if (instanceValues.consumed.isNotEmpty()) {
+            instanceValues.partialTemplates.add(TextTemplate(instanceValues.consumed.toString()))
         }
         return instanceValues.partialTemplates
     }
-  
+
     private fun checkTag(iterator: CharIterator, instanceValues: TokenizingInstanceValues) {
         if (iterator.hasNext()) {
             val nextCharacter = iterator.nextChar()
