@@ -28,6 +28,20 @@ class WeaselTemplateSpec extends Specification {
     @Shared def templateEngine = new WeaselTemplateEngine(this.class.classLoader)
     @Shared JsonObject data = new JsonObject()
 
+    String removeWhitespace(String input) {
+        StringBuilder result = new StringBuilder()
+        input.readLines().forEach {
+            if (!it.trim().isEmpty()) {
+                result.append(it.trim() + "\n")
+            }
+        }
+        return result.toString()
+    }
+
+    Boolean contentCompare(String input1, String input2) {
+        return removeWhitespace(input1) == removeWhitespace(input2)
+    }
+
     def setup() {
         data.addProperty("name", "Alex")
         data.addProperty("age", 32)
@@ -52,7 +66,7 @@ class WeaselTemplateSpec extends Specification {
         when:
         String result = templateEngine.processTemplate("01-text.test", data)
         then:
-        expectedResult == result
+        contentCompare(expectedResult, result)
     }
 
     def "support basic variables"() {
@@ -61,7 +75,7 @@ class WeaselTemplateSpec extends Specification {
         when:
         String result = templateEngine.processTemplate("02-scalar.test", data)
         then:
-        expectedResult == result
+        contentCompare(expectedResult, result)
     }
 
     def "expect an exception when you pass list or map data to a singular reference"() {
@@ -81,7 +95,7 @@ class WeaselTemplateSpec extends Specification {
         when:
         String result = templateEngine.processTemplate("03-conditional.test", data)
         then:
-        expectedResult == result
+        contentCompare(expectedResult, result)
     }
 //
 //    def "test passing list data to a list references"() {
