@@ -74,6 +74,15 @@ class WeaselTemplateSpec extends Specification {
         then:
         thrown(RuntimeException)
     }
+
+    def "support conditionals"() {
+        given:
+        String expectedResult = new File("src/test/resources/03-conditional.result").text
+        when:
+        String result = templateEngine.processTemplate("03-conditional.test", data)
+        then:
+        expectedResult == result
+    }
 //
 //    def "test passing list data to a list references"() {
 //    }
@@ -86,15 +95,6 @@ class WeaselTemplateSpec extends Specification {
 //    }
 //
 //    def "expect an exception when you pass list or singular values to map references"() {
-//    }
-//
-//    def "support simple if conditions"() {
-//    }
-//
-//    def "support full if else conditions"() {
-//    }
-//
-//    def "support nested conditions"() {
 //    }
 //
 //    def "support includes"() {

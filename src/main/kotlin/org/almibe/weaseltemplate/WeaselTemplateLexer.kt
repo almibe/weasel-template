@@ -109,26 +109,40 @@ class WeaselTemplateLexer {
     }
 
     private fun createIfToken(tagTokens: List<String>, instanceValues: TokenizingInstanceValues) {
+        assert(tagTokens.first() == "if")
+        assert(tagTokens.size == 2)
         TODO("finish")
     }
 
     private fun createElseIfToken(tagTokens: List<String>, instanceValues: TokenizingInstanceValues) {
+        assert(tagTokens.first() == "elseif")
+        assert(tagTokens.size == 2)
         TODO("finish")
     }
 
     private fun createElseToken(tagTokens: List<String>, instanceValues: TokenizingInstanceValues) {
+        assert(tagTokens.first() == "else")
+        assert(tagTokens.size == 1)
         TODO("finish")
     }
 
     private fun createIncludeToken(tagTokens: List<String>, instanceValues: TokenizingInstanceValues) {
+        assert(tagTokens.first() == "include")
+        assert(tagTokens.size == 2 || tagTokens.size == 3)
         TODO("finish")
     }
 
     private fun createEachToken(tagTokens: List<String>, instanceValues: TokenizingInstanceValues) {
+        assert(tagTokens.first() == "each")
+        assert(tagTokens.component3() == "as")
+        assert(tagTokens.size == 4 || tagTokens.size == 5)
         TODO("finish")
     }
 
     private fun createEndToken(tagTokens: List<String>, instanceValues: TokenizingInstanceValues) {
+        assert(tagTokens.first() == "end")
+        assert(tagTokens.component2() == "if" || tagTokens.component2() == "each")
+        assert(tagTokens.size == 2)
         TODO("finish")
     }
 }
