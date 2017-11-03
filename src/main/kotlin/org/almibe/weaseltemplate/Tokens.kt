@@ -22,8 +22,6 @@ interface PartialTemplate {
     fun appendResult(data: JsonObject, stringBuilder: StringBuilder)
 }
 
-interface Condition: PartialTemplate //TODO is this needed?
-
 /**
  * A TextTemplate simply represents an uninterpreted block of text.  The data object isn't used
  * in the appendResult method at all.
@@ -54,24 +52,44 @@ class ScalarTemplate(private val name: String): PartialTemplate {
     }
 }
 
-/**
- * A NamedTemplate is template made up of multiple PartialTemplates and given a name for referencing in the cache.
- */
-data class NamedTemplate(val templateName: String, private val content: List<PartialTemplate>): PartialTemplate {
+class IfTemplate(private val templates: List<ConditionTemplate>, private val elseTemplate: ElseTemplate?): PartialTemplate {
     override fun appendResult(data: JsonObject, stringBuilder: StringBuilder) {
-        content.forEach { currentTemplate ->
-            currentTemplate.appendResult(data, stringBuilder)
+        templates.forEach {
+            if(it.testCondition(data)) {
+                it.appendResult(data, stringBuilder)
+                return
+            }
         }
+        elseTemplate?.appendResult(data, stringBuilder)
     }
 }
 
-//data class IfTemplate()...
+class ConditionTemplate(private val condition: String, private val content: List<PartialTemplate>): PartialTemplate {
+    fun testCondition(data: JsonObject): Boolean {
+        val names = condition.split(".")
+        var current: JsonObject = data
+        val itr = names.iterator()
+        while (itr.hasNext()) {
+            val currentName = itr.next()
+            val element = current.get(currentName)
+            if (itr.hasNext() && element.isJsonObject) {
+                current = element as JsonObject
+            } else return !element.isJsonObject
+        }
+        return false
+    }
 
-//class Interpretation(val reference: List<String>): Token
-//class Conditional(val conditions: List<Condition>): Token
-//class If(val reference: List<String>, val content: List<Token>): Condition
-//class ElseIf(val reference: List<String>, val content: List<Token>): Condition
-//class Else(val content: List<Token>): Condition
+    override fun appendResult(data: JsonObject, stringBuilder: StringBuilder) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+}
+
+class ElseTemplate(private val content: List<PartialTemplate>): PartialTemplate {
+    override fun appendResult(data: JsonObject, stringBuilder: StringBuilder) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+}
+
 //class ListLoop(val reference: List<String>, val variableName: String, val content: List<Token>): Token
 //class MapLoop(val reference: List<String>, val keyName: String, val valueName: String, val content: List<Token>): Token
 //class Include(val reference: List<String>, val content: List<Token>)
@@ -91,3 +109,14 @@ data class NamedTemplate(val templateName: String, private val content: List<Par
 //    TEMPLATE_NAME,
 //    EOL
 //}
+
+/**
+ * A NamedTemplate is template made up of multiple PartialTemplates and given a name for referencing in the cache.
+ */
+data class NamedTemplate(val templateName: String, private val content: List<PartialTemplate>): PartialTemplate {
+    override fun appendResult(data: JsonObject, stringBuilder: StringBuilder) {
+        content.forEach { currentTemplate ->
+            currentTemplate.appendResult(data, stringBuilder)
+        }
+    }
+}
