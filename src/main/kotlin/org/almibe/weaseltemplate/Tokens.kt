@@ -49,8 +49,9 @@ class ScalarTemplate(private val name: List<String>): PartialTemplate {
  */
 data class NamedTemplate(val templateName: String, private val content: List<PartialTemplate>): PartialTemplate {
     override fun appendResult(data: JsonObject, stringBuilder: StringBuilder) {
-        //TODO maybe use collect here
-        TODO("not implemented")
+        content.forEach { currentTemplate ->
+            currentTemplate.appendResult(data, stringBuilder)
+        }
     }
 }
 

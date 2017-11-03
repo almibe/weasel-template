@@ -16,30 +16,25 @@
 
 package org.almibe.weaseltemplate
 
+import com.google.gson.JsonObject
+import spock.lang.Shared
 import spock.lang.Specification
 
 class WeaselTemplateSpec extends Specification {
-    def templateEngine = new WeaselTemplateEngine(this.class.classLoader)
+    @Shared def templateEngine = new WeaselTemplateEngine(this.class.classLoader)
+    @Shared JsonObject data = new JsonObject()
 
-    def simple = ['', 'test', 'multi word test', '$5 = $5']
-    def html = ['<hr>', 'This is a <test>.', '$', '$$$']
-    def scalar = ['<$test>', '<$data.test>', '$<$data.test1.test2>']
-    def ifs = []
-    def nestedIfs = []
-    def fullIfElse = []
-    def iterateList = []
-    def iterateMap = []
+    def setup() {
+        data.addProperty("test", "Test")
+    }
 
-    //TODO define all test data here inline as a list so .stream can be called
-    //TODO delete all test files
-
-    def "handle empty files"() {
+    def "handle plain files"() {
         given:
-        def lines = simple.stream()
+        String expectedResult = new File("src/test/resources/01-text.result").text
         when:
-        String result = templateEngine.applyTemplate("01-emptyFile.wtf", lines, null)
+        String result = templateEngine.processTemplate("01-text.test", data)
         then:
-        result.readLines().stream()
+        expectedResult == result
     }
 
     def "handle empty templates"() {
