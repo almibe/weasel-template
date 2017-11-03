@@ -16,6 +16,7 @@
 
 package org.almibe.weaseltemplate
 
+import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import spock.lang.Shared
 import spock.lang.Specification
@@ -64,8 +65,12 @@ class WeaselTemplateSpec extends Specification {
     }
 
     def "expect an exception when you pass list or map data to a singular reference"() {
+        given:
+        def copy = data.deepCopy()
         when:
-        templateEngine.processTemplate("02-scalar.test", data)
+        copy.remove("name")
+        copy.add("name", new JsonArray())
+        templateEngine.processTemplate("02-scalar.test", copy)
         then:
         thrown(RuntimeException)
     }
