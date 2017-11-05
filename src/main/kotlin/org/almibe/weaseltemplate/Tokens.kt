@@ -22,7 +22,7 @@ data class TextToken(val content: String): Token
 /**
  * A ScalarTemplate is passed a namespaced name and uses that name to access a scala value from the data JSONObject.
  */
-data class ScalarToken(private val name: String): Token
+data class ScalarToken(val name: String): Token
 data class IfToken(val condition: String): Token
 data class ElseIfToken(val condition: String): Token
 class ElseToken: Token

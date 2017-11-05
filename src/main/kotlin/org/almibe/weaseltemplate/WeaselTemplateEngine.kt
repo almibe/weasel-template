@@ -51,35 +51,29 @@ data class NamedTemplate(val templateName: String, private val content: List<Tok
         while(iterator.hasNext()) {
             val token = iterator.next()
             when (token) {
-                is TextToken -> handleToken(token)
-                is ScalarToken -> handleToken(token)
+                is TextToken -> handleToken(token, stringBuilder)
+                is ScalarToken -> handleToken(token, stringBuilder, data)
                 else -> throw RuntimeException("Unexpected condition")
             }
         }
     }
 
-    private fun handleToken(token: TextToken) {
-        TODO()
-//    override fun apply(data: JsonObject, stringBuilder: StringBuilder) {
-//        stringBuilder.append(content)
-//    }
+    private fun handleToken(token: TextToken, stringBuilder: StringBuilder) {
+        stringBuilder.append(token.content)
     }
 
-    private fun handleToken(token: ScalarToken) {
-        TODO()
-        //    override fun apply(data: JsonObject, stringBuilder: StringBuilder) {
-//        val names = name.split(".")
-//        var current: JsonObject = data
-//        names.forEach {
-//            val element = current.get(it)
-//            if (element.isJsonObject) {
-//                current = element as JsonObject
-//            } else if (element.isJsonPrimitive && names.last() == it) {
-//                stringBuilder.append(element.asString)
-//            } else {
-//                throw RuntimeException("Unexpected value")
-//            }
-//        }
-//    }
+    private fun handleToken(token: ScalarToken, stringBuilder: StringBuilder, data: JsonObject) {
+        val names = token.name.split(".")
+        var current: JsonObject = data
+        names.forEach {
+            val element = current.get(it)
+            if (element.isJsonObject) {
+                current = element as JsonObject
+            } else if (element.isJsonPrimitive && names.last() == it) {
+                stringBuilder.append(element.asString)
+            } else {
+                throw RuntimeException("Unexpected value")
+            }
+        }
     }
 }
