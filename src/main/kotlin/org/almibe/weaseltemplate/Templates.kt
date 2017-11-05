@@ -18,6 +18,19 @@ package org.almibe.weaseltemplate
 
 import com.google.gson.JsonObject
 
+interface Token
+
+data class TextToken(val content: String): Token
+data class ScalaToken(val name: String): Token
+data class IfToken(val condition: String): Token
+data class ElseIfToken(val condition: String): Token
+class ElseToken: Token
+class EndIfToken: Token
+data class EachListToken(val list: String, val iteratorName: String): Token
+data class EachMapToken(val map: String, val keyName: String, val valueName: String): Token
+class EndEachToken: Token
+data class IncludeToken(val name: String): Token
+
 interface PartialTemplate {
     fun appendResult(data: JsonObject, stringBuilder: StringBuilder)
 }
