@@ -18,18 +18,54 @@ package org.almibe.weaseltemplate
 
 import com.google.gson.JsonObject
 
-interface Token
+interface Token {
+    fun apply(data: JsonObject, stringBuilder: StringBuilder)
+}
+data class TextToken(val content: String): Token {
+    override fun apply(data: JsonObject, stringBuilder: StringBuilder) {
+        stringBuilder.append(content)
+    }
+}
+data class ScalarToken(val name: String): Token {
+    override fun apply(data: JsonObject, stringBuilder: StringBuilder) {
 
-data class TextToken(val content: String): Token
-data class ScalaToken(val name: String): Token
-data class IfToken(val condition: String): Token
-data class ElseIfToken(val condition: String): Token
-class ElseToken: Token
-class EndIfToken: Token
-data class EachListToken(val list: String, val iteratorName: String): Token
-data class EachMapToken(val map: String, val keyName: String, val valueName: String): Token
-class EndEachToken: Token
-data class IncludeToken(val name: String): Token
+    }
+}
+data class IfToken(val condition: String): Token {
+    override fun apply(data: JsonObject, stringBuilder: StringBuilder) {
+
+    }
+}
+data class ElseIfToken(val condition: String): Token {
+    override fun apply(data: JsonObject, stringBuilder: StringBuilder) {
+
+    }
+}
+class ElseToken: Token {
+    override fun apply(data: JsonObject, stringBuilder: StringBuilder) {
+
+    }
+}
+class EndIfToken: Token {
+    override fun apply(data: JsonObject, stringBuilder: StringBuilder) {
+
+    }
+}
+data class EachToken(val list: String, val iteratorName: String): Token {
+    override fun apply(data: JsonObject, stringBuilder: StringBuilder) {
+
+    }
+}
+class EndEachToken: Token {
+    override fun apply(data: JsonObject, stringBuilder: StringBuilder) {
+
+    }
+}
+data class IncludeToken(val name: String): Token {
+    override fun apply(data: JsonObject, stringBuilder: StringBuilder) {
+
+    }
+}
 
 /**
  * A NamedTemplate is template made up of multiple PartialTemplates and given a name for referencing in the cache.
@@ -38,12 +74,15 @@ data class NamedTemplate(val templateName: String, private val content: List<Tok
     fun apply(data: JsonObject): String {
         val stringBuilder = StringBuilder()
         val iterator = content.iterator()
-        handleToken(iterator, stringBuilder)
+        handleToken(iterator, data, stringBuilder)
         return stringBuilder.toString()
     }
 
-    private fun handleToken(iterator: Iterator<Token>, stringBuilder: StringBuilder) {
-
+    private fun handleToken(iterator: Iterator<Token>, data: JsonObject, stringBuilder: StringBuilder) {
+        while(iterator.hasNext()) {
+            val token = iterator.next()
+            token.apply(data, stringBuilder)
+        }
     }
 }
 

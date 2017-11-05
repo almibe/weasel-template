@@ -22,7 +22,6 @@ class WeaselTemplateLexer {
     private val specialCharacter = '$'
     private data class TokenizingInstanceValues(
         val consumed: StringBuilder = StringBuilder(),
-        //val partialTemplates: MutableList<PartialTemplate> = mutableListOf(),
         val tokens: MutableList<Token> = mutableListOf(),
         val lineNumber: Int = 0
     )
@@ -42,7 +41,7 @@ class WeaselTemplateLexer {
             instanceValues.consumed.append("\n")
         }
         if (instanceValues.consumed.isNotEmpty()) {
-            //instanceValues.partialTemplates.add(TextTemplate(instanceValues.consumed.toString()))
+            instanceValues.tokens.add(TextToken(instanceValues.consumed.toString()))
         }
         return instanceValues.tokens
     }
@@ -101,12 +100,12 @@ class WeaselTemplateLexer {
     private fun createTextToken(instanceValues: TokenizingInstanceValues) {
         val tokenValue = instanceValues.consumed.toString()
         instanceValues.consumed.setLength(0) //clear
-        //instanceValues.partialTemplates.add(TextTemplate(tokenValue))
+        instanceValues.tokens.add(TextToken(tokenValue))
     }
 
     private fun createScalarToken(tagTokens: List<String>, instanceValues: TokenizingInstanceValues) {
         assert(tagTokens.size == 1)
-        //instanceValues.partialTemplates.add(ScalarTemplate(tagTokens.first()))
+        instanceValues.tokens.add(ScalarToken(tagTokens.first()))
     }
 
     private fun createIfToken(tagTokens: List<String>, instanceValues: TokenizingInstanceValues) {
@@ -136,7 +135,7 @@ class WeaselTemplateLexer {
     private fun createEachToken(tagTokens: List<String>, instanceValues: TokenizingInstanceValues) {
         assert(tagTokens.first() == "each")
         assert(tagTokens.component3() == "as")
-        assert(tagTokens.size == 4 || tagTokens.size == 5)
+        assert(tagTokens.size == 4)
         TODO("finish")
     }
 
