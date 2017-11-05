@@ -26,11 +26,26 @@ data class TextToken(val content: String): Token {
         stringBuilder.append(content)
     }
 }
-data class ScalarToken(val name: String): Token {
+/**
+ * A ScalarTemplate is passed a namespaced name and uses that name to access a scala value from the data JSONObject.
+ */
+data class ScalarToken(private val name: String): Token {
     override fun apply(data: JsonObject, stringBuilder: StringBuilder) {
-
+        val names = name.split(".")
+        var current: JsonObject = data
+        names.forEach {
+            val element = current.get(it)
+            if (element.isJsonObject) {
+                current = element as JsonObject
+            } else if (element.isJsonPrimitive && names.last() == it) {
+                stringBuilder.append(element.asString)
+            } else {
+                throw RuntimeException("Unexpected value")
+            }
+        }
     }
 }
+
 data class IfToken(val condition: String): Token {
     override fun apply(data: JsonObject, stringBuilder: StringBuilder) {
 
@@ -86,39 +101,6 @@ data class NamedTemplate(val templateName: String, private val content: List<Tok
     }
 }
 
-//interface PartialTemplate {
-//    fun appendResult(data: JsonObject, stringBuilder: StringBuilder)
-//}
-//
-///**
-// * A TextTemplate simply represents an uninterpreted block of text.  The data object isn't used
-// * in the appendResult method at all.
-// */
-//class TextTemplate(private val textContent: String): PartialTemplate {
-//    override fun appendResult(data: JsonObject, stringBuilder: StringBuilder) {
-//        stringBuilder.append(textContent)
-//    }
-//}
-//
-///**
-// * A ScalarTemplate is passed a namespaced name and uses that name to access a scala value from the data JSONObject.
-// */
-//class ScalarTemplate(private val name: String): PartialTemplate {
-//    override fun appendResult(data: JsonObject, stringBuilder: StringBuilder) {
-//        val names = name.split(".")
-//        var current: JsonObject = data
-//        names.forEach {
-//            val element = current.get(it)
-//            if (element.isJsonObject) {
-//                current = element as JsonObject
-//            } else if (element.isJsonPrimitive && names.last() == it) {
-//                stringBuilder.append(element.asString)
-//            } else {
-//                throw RuntimeException("Unexpected value")
-//            }
-//        }
-//    }
-//}
 //
 //class IfTemplate(private val templates: List<ConditionTemplate>, private val elseTemplate: ElseTemplate?): PartialTemplate {
 //    override fun appendResult(data: JsonObject, stringBuilder: StringBuilder) {
