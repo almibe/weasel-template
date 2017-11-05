@@ -27,20 +27,14 @@ class WeaselTemplateEngine(private val classLoader: ClassLoader) {
     fun processTemplate(templateName: String, data: JsonObject): String {
         val template = templateCache[templateName]
         return if (template != null) {
-            applyTemplate(template, data)
+            template.apply(data)
         } else {
             val path = Paths.get(classLoader.getResource(templateName).toURI())
             val lines = Files.lines(path)
             val tokens = lexer.tokenize(lines)
             val newTemplate = NamedTemplate(templateName, tokens)
             templateCache[templateName] = newTemplate
-            applyTemplate(newTemplate, data)
+            newTemplate.apply(data)
         }
-    }
-
-    private fun applyTemplate(template: NamedTemplate, data: JsonObject): String {
-        val sb = StringBuilder()
-        template.appendResult(data, sb)
-        return sb.toString()
     }
 }

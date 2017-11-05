@@ -54,10 +54,10 @@ class WeaselTemplateSpec extends Specification {
         given:
         WeaselTemplateLexer lexer = new WeaselTemplateLexer()
         when:
-        List<PartialTemplate> tokens = lexer.tokenize(Files.lines(Paths.get("src/test/resources/01-text.result")))
+        List<Token> tokens = lexer.tokenize(Files.lines(Paths.get("src/test/resources/01-text.result")))
         then:
         tokens.size() == 1
-        tokens.first() instanceof TextTemplate
+        tokens.first() instanceof TextToken
     }
 
     def "handle plain files"() {
