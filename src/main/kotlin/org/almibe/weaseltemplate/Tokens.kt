@@ -18,42 +18,12 @@ package org.almibe.weaseltemplate
 
 interface Token
 
-data class TextToken(val content: String): Token
-/**
- * A ScalarTemplate is passed a namespaced name and uses that name to access a scala value from the data JSONObject.
- */
-data class ScalarToken(val name: String): Token
-data class IfToken(val condition: String): Token
-data class ElseIfToken(val condition: String): Token
-class ElseToken: Token
-class EndIfToken: Token
-data class EachToken(val list: String, val iteratorName: String): Token
-class EndEachToken: Token
-data class IncludeToken(val name: String): Token
-//
-//class IfTemplate(private val templates: List<ConditionTemplate>, private val elseTemplate: ElseTemplate?): PartialTemplate {
-//    override fun appendResult(data: JsonObject, stringBuilder: StringBuilder) {
-//        templates.forEach {
-//            if(it.testCondition(data)) {
-//                it.appendResult(data, stringBuilder)
-//                return
-//            }
-//        }
-//        elseTemplate?.appendResult(data, stringBuilder)
-//    }
-//}
-//
-//class ConditionTemplate(private val condition: String, private val content: List<PartialTemplate>): PartialTemplate {
-//    fun testCondition(data: JsonObject): Boolean {
-//        val names = condition.split(".")
-//        var current: JsonObject = data
-//        val itr = names.iterator()
-//        while (itr.hasNext()) {
-//            val currentName = itr.next()
-//            val element = current.get(currentName)
-//            if (itr.hasNext() && element.isJsonObject) {
-//                current = element as JsonObject
-//            } else return !element.isJsonObject
-//        }
-//        return false
-//    }
+data class TextToken(val content: String): Token // TextToken("hello")
+data class ScalarToken(val name: String): Token // ScalarToken("user.address.city")
+data class IfToken(val condition: String): Token // IfToken("user.isAdmin")
+data class ElseIfToken(val condition: String): Token // ElseIfToken("user.isAdmin")
+class ElseToken: Token // ElseToken()
+class EndIfToken: Token // EndIfToken()
+data class EachToken(val list: String, val iteratorName: String): Token // EachToken("users", "user")
+class EndEachToken: Token // EndEachToken()
+data class IncludeToken(val name: String, val argument: String? = null): Token // IncludeToken("adminTemplate.wt", "user")

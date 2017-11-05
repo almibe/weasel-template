@@ -111,38 +111,46 @@ class WeaselTemplateLexer {
     private fun createIfToken(tagTokens: List<String>, instanceValues: TokenizingInstanceValues) {
         assert(tagTokens.first() == "if")
         assert(tagTokens.size == 2)
-        TODO("finish")
+        instanceValues.tokens.add(IfToken(tagTokens.component2()))
     }
 
     private fun createElseIfToken(tagTokens: List<String>, instanceValues: TokenizingInstanceValues) {
         assert(tagTokens.first() == "elseif")
         assert(tagTokens.size == 2)
-        TODO("finish")
+        instanceValues.tokens.add(ElseIfToken(tagTokens.component2()))
     }
 
     private fun createElseToken(tagTokens: List<String>, instanceValues: TokenizingInstanceValues) {
         assert(tagTokens.first() == "else")
         assert(tagTokens.size == 1)
-        TODO("finish")
+        instanceValues.tokens.add(ElseToken())
     }
 
     private fun createIncludeToken(tagTokens: List<String>, instanceValues: TokenizingInstanceValues) {
         assert(tagTokens.first() == "include")
         assert(tagTokens.size == 2 || tagTokens.size == 3)
-        TODO("finish")
+        when (tagTokens.size) {
+            2 -> instanceValues.tokens.add(IncludeToken(tagTokens.component2()))
+            3 -> instanceValues.tokens.add(IncludeToken(tagTokens.component2(), tagTokens.component3()))
+            else -> RuntimeException("Unexpected value")
+        }
     }
 
     private fun createEachToken(tagTokens: List<String>, instanceValues: TokenizingInstanceValues) {
         assert(tagTokens.first() == "each")
         assert(tagTokens.component3() == "as")
         assert(tagTokens.size == 4)
-        TODO("finish")
+        instanceValues.tokens.add(EachToken(tagTokens.component2(), tagTokens.component4()))
     }
 
     private fun createEndToken(tagTokens: List<String>, instanceValues: TokenizingInstanceValues) {
         assert(tagTokens.first() == "end")
         assert(tagTokens.component2() == "if" || tagTokens.component2() == "each")
         assert(tagTokens.size == 2)
-        TODO("finish")
+        when (tagTokens.component2()) {
+            "if" -> instanceValues.tokens.add(EndIfToken())
+            "each" -> instanceValues.tokens.add(EndEachToken())
+            else -> RuntimeException("Unexpected value")
+        }
     }
 }

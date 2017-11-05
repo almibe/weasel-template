@@ -53,6 +53,9 @@ data class NamedTemplate(val templateName: String, private val content: List<Tok
             when (token) {
                 is TextToken -> handleToken(token, stringBuilder)
                 is ScalarToken -> handleToken(token, stringBuilder, data)
+                is IfToken -> handleToken(token, stringBuilder, data)
+                is EachToken -> handleToken(token, stringBuilder, data)
+                is IncludeToken -> handleToken(token, stringBuilder, data)
                 else -> throw RuntimeException("Unexpected condition")
             }
         }
@@ -76,4 +79,43 @@ data class NamedTemplate(val templateName: String, private val content: List<Tok
             }
         }
     }
+
+    private fun handleToken(token: IfToken, stringBuilder: StringBuilder, data: JsonObject) {
+        TODO()
+    }
+
+    private fun handleToken(token: EachToken, stringBuilder: StringBuilder, data: JsonObject) {
+        TODO()
+    }
+
+    private fun handleToken(token: IncludeToken, stringBuilder: StringBuilder, data: JsonObject) {
+        TODO()
+    }
 }
+//
+//class IfTemplate(private val templates: List<ConditionTemplate>, private val elseTemplate: ElseTemplate?): PartialTemplate {
+//    override fun appendResult(data: JsonObject, stringBuilder: StringBuilder) {
+//        templates.forEach {
+//            if(it.testCondition(data)) {
+//                it.appendResult(data, stringBuilder)
+//                return
+//            }
+//        }
+//        elseTemplate?.appendResult(data, stringBuilder)
+//    }
+//}
+//
+//class ConditionTemplate(private val condition: String, private val content: List<PartialTemplate>): PartialTemplate {
+//    fun testCondition(data: JsonObject): Boolean {
+//        val names = condition.split(".")
+//        var current: JsonObject = data
+//        val itr = names.iterator()
+//        while (itr.hasNext()) {
+//            val currentName = itr.next()
+//            val element = current.get(currentName)
+//            if (itr.hasNext() && element.isJsonObject) {
+//                current = element as JsonObject
+//            } else return !element.isJsonObject
+//        }
+//        return false
+//    }
