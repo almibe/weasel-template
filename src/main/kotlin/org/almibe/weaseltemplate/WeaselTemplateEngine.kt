@@ -38,3 +38,19 @@ class WeaselTemplateEngine(private val classLoader: ClassLoader) {
         }
     }
 }
+
+data class NamedTemplate(val templateName: String, private val content: List<Token>) {
+    fun apply(data: JsonObject): String {
+        val stringBuilder = StringBuilder()
+        val iterator = content.iterator()
+        handleToken(iterator, data, stringBuilder)
+        return stringBuilder.toString()
+    }
+
+    private fun handleToken(iterator: Iterator<Token>, data: JsonObject, stringBuilder: StringBuilder) {
+        while(iterator.hasNext()) {
+            val token = iterator.next()
+            token.apply(data, stringBuilder)
+        }
+    }
+}

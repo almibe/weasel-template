@@ -45,62 +45,41 @@ data class ScalarToken(private val name: String): Token {
         }
     }
 }
-
 data class IfToken(val condition: String): Token {
     override fun apply(data: JsonObject, stringBuilder: StringBuilder) {
-
+        TODO()
     }
 }
 data class ElseIfToken(val condition: String): Token {
     override fun apply(data: JsonObject, stringBuilder: StringBuilder) {
-
+        TODO()
     }
 }
 class ElseToken: Token {
     override fun apply(data: JsonObject, stringBuilder: StringBuilder) {
-
+        TODO()
     }
 }
 class EndIfToken: Token {
     override fun apply(data: JsonObject, stringBuilder: StringBuilder) {
-
+        TODO()
     }
 }
 data class EachToken(val list: String, val iteratorName: String): Token {
     override fun apply(data: JsonObject, stringBuilder: StringBuilder) {
-
+        TODO()
     }
 }
 class EndEachToken: Token {
     override fun apply(data: JsonObject, stringBuilder: StringBuilder) {
-
+        TODO()
     }
 }
 data class IncludeToken(val name: String): Token {
     override fun apply(data: JsonObject, stringBuilder: StringBuilder) {
-
+        TODO()
     }
 }
-
-/**
- * A NamedTemplate is template made up of multiple PartialTemplates and given a name for referencing in the cache.
- */
-data class NamedTemplate(val templateName: String, private val content: List<Token>) {
-    fun apply(data: JsonObject): String {
-        val stringBuilder = StringBuilder()
-        val iterator = content.iterator()
-        handleToken(iterator, data, stringBuilder)
-        return stringBuilder.toString()
-    }
-
-    private fun handleToken(iterator: Iterator<Token>, data: JsonObject, stringBuilder: StringBuilder) {
-        while(iterator.hasNext()) {
-            val token = iterator.next()
-            token.apply(data, stringBuilder)
-        }
-    }
-}
-
 //
 //class IfTemplate(private val templates: List<ConditionTemplate>, private val elseTemplate: ElseTemplate?): PartialTemplate {
 //    override fun appendResult(data: JsonObject, stringBuilder: StringBuilder) {
