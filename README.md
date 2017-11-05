@@ -3,10 +3,10 @@ Weasel Template
 
 *This project is still under development.*
 
-A minimalist templating engine for the JVM based on JSON &amp; implemented in Kotlin.
+A minimalist template engine for the JVM based on JSON &amp; implemented in Kotlin.
 
 ## Features
-- Use JSON for datamodel (via GSON)
+- Use JSON for data model (via GSON)
 - Target HTML output
 - Play well with OSGi
 - Support a minimal number of features (conditionals, list iteration, and includes)
