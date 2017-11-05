@@ -50,7 +50,36 @@ data class NamedTemplate(val templateName: String, private val content: List<Tok
     private fun handleToken(iterator: Iterator<Token>, data: JsonObject, stringBuilder: StringBuilder) {
         while(iterator.hasNext()) {
             val token = iterator.next()
-            token.apply(data, stringBuilder)
+            when (token) {
+                is TextToken -> handleToken(token)
+                is ScalarToken -> handleToken(token)
+                else -> throw RuntimeException("Unexpected condition")
+            }
         }
+    }
+
+    private fun handleToken(token: TextToken) {
+        TODO()
+//    override fun apply(data: JsonObject, stringBuilder: StringBuilder) {
+//        stringBuilder.append(content)
+//    }
+    }
+
+    private fun handleToken(token: ScalarToken) {
+        TODO()
+        //    override fun apply(data: JsonObject, stringBuilder: StringBuilder) {
+//        val names = name.split(".")
+//        var current: JsonObject = data
+//        names.forEach {
+//            val element = current.get(it)
+//            if (element.isJsonObject) {
+//                current = element as JsonObject
+//            } else if (element.isJsonPrimitive && names.last() == it) {
+//                stringBuilder.append(element.asString)
+//            } else {
+//                throw RuntimeException("Unexpected value")
+//            }
+//        }
+//    }
     }
 }

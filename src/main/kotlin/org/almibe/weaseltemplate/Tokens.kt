@@ -16,70 +16,20 @@
 
 package org.almibe.weaseltemplate
 
-import com.google.gson.JsonObject
+interface Token
 
-interface Token {
-    fun apply(data: JsonObject, stringBuilder: StringBuilder)
-}
-data class TextToken(val content: String): Token {
-    override fun apply(data: JsonObject, stringBuilder: StringBuilder) {
-        stringBuilder.append(content)
-    }
-}
+data class TextToken(val content: String): Token
 /**
  * A ScalarTemplate is passed a namespaced name and uses that name to access a scala value from the data JSONObject.
  */
-data class ScalarToken(private val name: String): Token {
-    override fun apply(data: JsonObject, stringBuilder: StringBuilder) {
-        val names = name.split(".")
-        var current: JsonObject = data
-        names.forEach {
-            val element = current.get(it)
-            if (element.isJsonObject) {
-                current = element as JsonObject
-            } else if (element.isJsonPrimitive && names.last() == it) {
-                stringBuilder.append(element.asString)
-            } else {
-                throw RuntimeException("Unexpected value")
-            }
-        }
-    }
-}
-data class IfToken(val condition: String): Token {
-    override fun apply(data: JsonObject, stringBuilder: StringBuilder) {
-        TODO()
-    }
-}
-data class ElseIfToken(val condition: String): Token {
-    override fun apply(data: JsonObject, stringBuilder: StringBuilder) {
-        TODO()
-    }
-}
-class ElseToken: Token {
-    override fun apply(data: JsonObject, stringBuilder: StringBuilder) {
-        TODO()
-    }
-}
-class EndIfToken: Token {
-    override fun apply(data: JsonObject, stringBuilder: StringBuilder) {
-        TODO()
-    }
-}
-data class EachToken(val list: String, val iteratorName: String): Token {
-    override fun apply(data: JsonObject, stringBuilder: StringBuilder) {
-        TODO()
-    }
-}
-class EndEachToken: Token {
-    override fun apply(data: JsonObject, stringBuilder: StringBuilder) {
-        TODO()
-    }
-}
-data class IncludeToken(val name: String): Token {
-    override fun apply(data: JsonObject, stringBuilder: StringBuilder) {
-        TODO()
-    }
-}
+data class ScalarToken(private val name: String): Token
+data class IfToken(val condition: String): Token
+data class ElseIfToken(val condition: String): Token
+class ElseToken: Token
+class EndIfToken: Token
+data class EachToken(val list: String, val iteratorName: String): Token
+class EndEachToken: Token
+data class IncludeToken(val name: String): Token
 //
 //class IfTemplate(private val templates: List<ConditionTemplate>, private val elseTemplate: ElseTemplate?): PartialTemplate {
 //    override fun appendResult(data: JsonObject, stringBuilder: StringBuilder) {
@@ -107,32 +57,3 @@ data class IncludeToken(val name: String): Token {
 //        }
 //        return false
 //    }
-//
-//    override fun appendResult(data: JsonObject, stringBuilder: StringBuilder) {
-//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-//    }
-//}
-//
-//class ElseTemplate(private val content: List<PartialTemplate>): PartialTemplate {
-//    override fun appendResult(data: JsonObject, stringBuilder: StringBuilder) {
-//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-//    }
-//}
-//
-//class ListLoop(val reference: List<String>, val variableName: String, val content: List<PartialTemplate>): PartialTemplate {
-//    override fun appendResult(data: JsonObject, stringBuilder: StringBuilder) {
-//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-//    }
-//}
-//
-//class MapLoop(val reference: List<String>, val keyName: String, val valueName: String, val content: List<PartialTemplate>): PartialTemplate {
-//    override fun appendResult(data: JsonObject, stringBuilder: StringBuilder) {
-//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-//    }
-//}
-//
-//class Include(val reference: List<String>, val content: List<PartialTemplate>): PartialTemplate {
-//    override fun appendResult(data: JsonObject, stringBuilder: StringBuilder) {
-//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-//    }
-//}
