@@ -21,12 +21,13 @@ import java.util.stream.Stream
 class WeaselTemplateLexer {
     private val specialCharacter = '$'
     private data class TokenizingInstanceValues(
-            val consumed: StringBuilder = StringBuilder(),
-            val partialTemplates: MutableList<PartialTemplate> = mutableListOf(),
-            val lineNumber: Int = 0
+        val consumed: StringBuilder = StringBuilder(),
+        //val partialTemplates: MutableList<PartialTemplate> = mutableListOf(),
+        val tokens: MutableList<Token> = mutableListOf(),
+        val lineNumber: Int = 0
     )
 
-    fun tokenize(lines: Stream<String>): List<PartialTemplate> {
+    fun tokenize(lines: Stream<String>): List<Token> {
         val instanceValues = WeaselTemplateLexer.TokenizingInstanceValues()
         lines.forEach { line: String ->
             val iterator = line.toCharArray().iterator()
@@ -41,9 +42,9 @@ class WeaselTemplateLexer {
             instanceValues.consumed.append("\n")
         }
         if (instanceValues.consumed.isNotEmpty()) {
-            instanceValues.partialTemplates.add(TextTemplate(instanceValues.consumed.toString()))
+            //instanceValues.partialTemplates.add(TextTemplate(instanceValues.consumed.toString()))
         }
-        return instanceValues.partialTemplates
+        return instanceValues.tokens
     }
 
     private fun checkTag(iterator: CharIterator, instanceValues: TokenizingInstanceValues) {
@@ -100,12 +101,12 @@ class WeaselTemplateLexer {
     private fun createTextToken(instanceValues: TokenizingInstanceValues) {
         val tokenValue = instanceValues.consumed.toString()
         instanceValues.consumed.setLength(0) //clear
-        instanceValues.partialTemplates.add(TextTemplate(tokenValue))
+        //instanceValues.partialTemplates.add(TextTemplate(tokenValue))
     }
 
     private fun createScalarToken(tagTokens: List<String>, instanceValues: TokenizingInstanceValues) {
         assert(tagTokens.size == 1)
-        instanceValues.partialTemplates.add(ScalarTemplate(tagTokens.first()))
+        //instanceValues.partialTemplates.add(ScalarTemplate(tagTokens.first()))
     }
 
     private fun createIfToken(tagTokens: List<String>, instanceValues: TokenizingInstanceValues) {
