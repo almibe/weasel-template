@@ -21,12 +21,12 @@ import java.util.stream.Stream
 class WeaselTemplateLexer {
     private val specialCharacter = '$'
     private data class TokenizingInstanceValues(
-        val consumed: StringBuilder = StringBuilder(),
-        val tokens: MutableList<Token> = mutableListOf(),
-        val lineNumber: Int = 0
+            val consumed: StringBuilder = StringBuilder(),
+            val templates: MutableList<Template> = mutableListOf(),
+            val lineNumber: Int = 0
     )
 
-    fun tokenize(lines: Stream<String>): List<Token> {
+    fun tokenize(lines: Stream<String>): List<Template> {
         val instanceValues = WeaselTemplateLexer.TokenizingInstanceValues()
         lines.forEach { line: String ->
             val iterator = line.toCharArray().iterator()
@@ -41,9 +41,9 @@ class WeaselTemplateLexer {
             instanceValues.consumed.append("\n")
         }
         if (instanceValues.consumed.isNotEmpty()) {
-            instanceValues.tokens.add(TextToken(instanceValues.consumed.toString()))
+            instanceValues.templates.add(TextTemplate(instanceValues.consumed.toString()))
         }
-        return instanceValues.tokens
+        return instanceValues.templates
     }
 
     private fun checkTag(iterator: CharIterator, instanceValues: TokenizingInstanceValues) {
@@ -100,38 +100,38 @@ class WeaselTemplateLexer {
     private fun createTextToken(instanceValues: TokenizingInstanceValues) {
         val tokenValue = instanceValues.consumed.toString()
         instanceValues.consumed.setLength(0) //clear
-        instanceValues.tokens.add(TextToken(tokenValue))
+        instanceValues.templates.add(TextTemplate(tokenValue))
     }
 
     private fun createScalarToken(tagTokens: List<String>, instanceValues: TokenizingInstanceValues) {
         assert(tagTokens.size == 1)
-        instanceValues.tokens.add(ScalarToken(tagTokens.first()))
+        instanceValues.templates.add(ScalarTemplate(tagTokens.first()))
     }
 
     private fun createIfToken(tagTokens: List<String>, instanceValues: TokenizingInstanceValues) {
         assert(tagTokens.first() == "if")
         assert(tagTokens.size == 2)
-        instanceValues.tokens.add(IfToken(tagTokens.component2()))
+        instanceValues.templates.add(IfTemplate(tagTokens.component2()))
     }
 
     private fun createElseIfToken(tagTokens: List<String>, instanceValues: TokenizingInstanceValues) {
         assert(tagTokens.first() == "elseif")
         assert(tagTokens.size == 2)
-        instanceValues.tokens.add(ElseIfToken(tagTokens.component2()))
+        instanceValues.templates.add(ElseIfTemplate(tagTokens.component2()))
     }
 
     private fun createElseToken(tagTokens: List<String>, instanceValues: TokenizingInstanceValues) {
         assert(tagTokens.first() == "else")
         assert(tagTokens.size == 1)
-        instanceValues.tokens.add(ElseToken())
+        instanceValues.templates.add(ElseTemplate())
     }
 
     private fun createIncludeToken(tagTokens: List<String>, instanceValues: TokenizingInstanceValues) {
         assert(tagTokens.first() == "include")
         assert(tagTokens.size == 2 || tagTokens.size == 3)
         when (tagTokens.size) {
-            2 -> instanceValues.tokens.add(IncludeToken(tagTokens.component2()))
-            3 -> instanceValues.tokens.add(IncludeToken(tagTokens.component2(), tagTokens.component3()))
+            2 -> instanceValues.templates.add(IncludeTemplate(tagTokens.component2()))
+            3 -> instanceValues.templates.add(IncludeTemplate(tagTokens.component2(), tagTokens.component3()))
             else -> RuntimeException("Unexpected value")
         }
     }
@@ -140,7 +140,7 @@ class WeaselTemplateLexer {
         assert(tagTokens.first() == "each")
         assert(tagTokens.component3() == "as")
         assert(tagTokens.size == 4)
-        instanceValues.tokens.add(EachToken(tagTokens.component2(), tagTokens.component4()))
+        instanceValues.templates.add(EachTemplate(tagTokens.component2(), tagTokens.component4()))
     }
 
     private fun createEndToken(tagTokens: List<String>, instanceValues: TokenizingInstanceValues) {
@@ -148,8 +148,8 @@ class WeaselTemplateLexer {
         assert(tagTokens.component2() == "if" || tagTokens.component2() == "each")
         assert(tagTokens.size == 2)
         when (tagTokens.component2()) {
-            "if" -> instanceValues.tokens.add(EndIfToken())
-            "each" -> instanceValues.tokens.add(EndEachToken())
+//            "if" -> instanceValues.templates.add(EndIfTemplate())
+//            "each" -> instanceValues.templates.add(EndEachTemplate())
             else -> RuntimeException("Unexpected value")
         }
     }
