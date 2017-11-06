@@ -24,23 +24,9 @@ import spock.lang.Specification
 import java.nio.file.Files
 import java.nio.file.Paths
 
-class WeaselTemplateSpec extends Specification {
+class WeaselTemplateEngineSpec extends Specification {
     @Shared def templateEngine = new WeaselTemplateEngine(this.class.classLoader)
     @Shared JsonObject data = new JsonObject()
-
-    String removeWhitespace(String input) {
-        StringBuilder result = new StringBuilder()
-        input.readLines().forEach {
-            if (!it.trim().isEmpty()) {
-                result.append(it.trim() + "\n")
-            }
-        }
-        return result.toString()
-    }
-
-    Boolean contentCompare(String input1, String input2) {
-        return removeWhitespace(input1) == removeWhitespace(input2)
-    }
 
     def setup() {
         data.addProperty("name", "Alex")
