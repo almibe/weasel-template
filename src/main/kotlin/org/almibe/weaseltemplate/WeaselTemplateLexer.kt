@@ -98,7 +98,7 @@ class WeaselTemplateLexer {
     private fun createTextToken(instanceValues: TokenizingInstanceValues) {
         val tokenValue = instanceValues.consumed.toString()
         instanceValues.consumed.setLength(0) //clear
-        if (instanceValues.consumed.trim().isNotEmpty()) {
+        if (tokenValue.trim().isNotEmpty()) {
             instanceValues.templates.add(TextTemplate(tokenValue))
         }
     }
