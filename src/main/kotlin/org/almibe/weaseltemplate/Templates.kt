@@ -43,12 +43,32 @@ data class ScalarTemplate(val name: String): Template { // ScalarTemplate("user.
         }
     }
 }
-data class IfTemplate(val condition: String): Template { // IfTemplate("user.isAdmin")
+data class IfTemplate(val conditionTemplates: List<ConditionalTemplate>, val elseTemplate: ElseTemplate?): Template {
     override fun apply(data: JsonObject, stringBuilder: StringBuilder) {
-        TODO()
+        conditionTemplates.forEach { conditionTemplate ->
+            if (conditionTemplate.testCondition(data)) {
+                conditionTemplate.apply(data, stringBuilder)
+                return
+            } else {
+                elseTemplate?.apply(data, stringBuilder)
+            }
+        }
     }
 }
-data class ElseIfTemplate(val condition: String): Template { // ElseIfTemplate("user.isAdmin")
+data class ConditionalTemplate(val condition: String): Template { // ConditionalTemplate("user.isAdmin")
+    fun testCondition(data: JsonObject): Boolean {
+        val names = condition.split(".")
+        var current: JsonObject = data
+        val itr = names.iterator()
+        while (itr.hasNext()) {
+            val currentName = itr.next()
+            val element = current.get(currentName)
+            if (itr.hasNext() && element.isJsonObject) {
+                current = element as JsonObject
+            } else return !element.isJsonObject
+        }
+        return false
+    }
     override fun apply(data: JsonObject, stringBuilder: StringBuilder) {
         TODO()
     }
@@ -68,69 +88,3 @@ data class IncludeTemplate(val name: String, val argument: String? = null): Temp
         TODO()
     }
 }
-
-/*
-    private fun handleIfToken(token: IfTemplate, iterator: Iterator<Template>, stringBuilder: StringBuilder, data: JsonObject) {
-//        if (testCondition(token.condition, data)) {
-//            while (iterator.hasNext()) {
-//                val nextToken = iterator.next()
-//                when (nextToken) {
-//                    is TextTemplate -> handleTextToken(nextToken, stringBuilder)
-//                    is ScalarTemplate -> handleScalarToken(nextToken, stringBuilder, data)
-//                    is IfTemplate -> handleIfToken(token, iterator, stringBuilder, data)
-//                    is EachTemplate -> handleEachToken(nextToken, iterator, stringBuilder, data)
-//                    is IncludeTemplate -> handleIncludeToken(nextToken, stringBuilder, data)
-//                    is ElseIfTemplate -> return readToEndIf(iterator)
-//                    is ElseTemplate -> return readToEndIf(iterator)
-//                    is EndIfTemplate -> return
-//                    else -> throw RuntimeException("Unexpected condition")
-//                }
-//            }
-//        } else {
-//            skip@ while (iterator.hasNext()) {
-//                val nextToken = iterator.next()
-//                when (nextToken) {
-//                    is TextTemplate -> continue@skip
-//                    is ScalarTemplate -> continue@skip
-//                    is IfTemplate -> continue@skip
-//                    is EachTemplate -> continue@skip
-//                    is IncludeTemplate -> continue@skip
-//                    is ElseIfTemplate -> handleElseIfToken()
-//                    is ElseTemplate -> handleElseToken()
-//                    else -> throw RuntimeException("Unexpected condition")
-//                }
-//            }
-//        }
-    }
-
-    private fun readToEndIf(iterator: Iterator<Template>) {
-//        while (iterator.hasNext()) {
-//            val token = iterator.next()
-//            if (token is EndIfTemplate) {
-//                return
-//            }
-//        }
-    }
-
-    private fun testCondition(condition: String, data: JsonObject): Boolean {
-        val names = condition.split(".")
-        var current: JsonObject = data
-        val itr = names.iterator()
-        while (itr.hasNext()) {
-            val currentName = itr.next()
-            val element = current.get(currentName)
-            if (itr.hasNext() && element.isJsonObject) {
-                current = element as JsonObject
-            } else return !element.isJsonObject
-        }
-        return false
-    }
-
-    private fun handleEachToken(token: EachTemplate, iterator: Iterator<Template>, stringBuilder: StringBuilder, data: JsonObject) {
-        TODO()
-    }
-
-    private fun handleIncludeToken(token: IncludeTemplate, stringBuilder: StringBuilder, data: JsonObject) {
-        TODO()
-    }
-*/
