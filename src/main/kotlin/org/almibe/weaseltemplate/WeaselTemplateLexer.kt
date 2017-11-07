@@ -40,9 +40,7 @@ class WeaselTemplateLexer {
             }
             instanceValues.consumed.append("\n")
         }
-        if (instanceValues.consumed.isNotEmpty()) {
-            instanceValues.templates.add(TextTemplate(instanceValues.consumed.toString()))
-        }
+        createTextToken(instanceValues) //create a text token with remaining value
         return instanceValues.templates
     }
 
@@ -100,7 +98,9 @@ class WeaselTemplateLexer {
     private fun createTextToken(instanceValues: TokenizingInstanceValues) {
         val tokenValue = instanceValues.consumed.toString()
         instanceValues.consumed.setLength(0) //clear
-        instanceValues.templates.add(TextTemplate(tokenValue))
+        if (instanceValues.consumed.trim().isNotEmpty()) {
+            instanceValues.templates.add(TextTemplate(tokenValue))
+        }
     }
 
     private fun createScalarToken(tagTokens: List<String>, instanceValues: TokenizingInstanceValues) {
