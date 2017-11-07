@@ -26,77 +26,8 @@ import java.nio.file.Paths
 
 class WeaselTemplateLexerSpec extends Specification {
     @Shared def templateLexer = new WeaselTemplateLexer()
-    @Shared def helper = Helper()
+    @Shared def helper = new Helper()
 
     def setup() {
-        data.addProperty("name", "Alex")
-        data.addProperty("age", 32)
-        def address = new JsonObject()
-        address.addProperty("city", "Bloomington")
-        data.add("address", address)
     }
-
-    def "test basic tokenizing"() {
-        given:
-        WeaselTemplateLexer lexer = new WeaselTemplateLexer()
-        when:
-        List<Template> tokens = lexer.tokenize(Files.lines(Paths.get("src/test/resources/01-text.result")))
-        then:
-        tokens.size() == 1
-        tokens.first() instanceof TextTemplate
-    }
-
-    def "handle plain files"() {
-        given:
-        String expectedResult = new File("src/test/resources/01-text.result").text
-        when:
-        String result = templateEngine.processTemplate("01-text.test", data)
-        then:
-        helper.contentCompare(expectedResult, result)
-    }
-
-    def "support basic variables"() {
-        given:
-        String expectedResult = new File("src/test/resources/02-scalar.result").text
-        when:
-        String result = templateEngine.processTemplate("02-scalar.test", data)
-        then:
-        helper.contentCompare(expectedResult, result)
-    }
-
-    def "expect an exception when you pass list or map data to a singular reference"() {
-        given:
-        def copy = data.deepCopy()
-        when:
-        copy.remove("name")
-        copy.add("name", new JsonArray())
-        templateEngine.processTemplate("02-scalar.test", copy)
-        then:
-        thrown(RuntimeException)
-    }
-
-    def "support conditionals"() {
-        given:
-        String expectedResult = new File("src/test/resources/03-conditional.result").text
-        when:
-        String result = templateEngine.processTemplate("03-conditional.test", data)
-        then:
-        helper.contentCompare(expectedResult, result)
-    }
-//
-//    def "test passing list data to a list references"() {
-//    }
-//
-//    def "expect an exception when you pass map or singular values to list references"() {
-//
-//    }
-//
-//    def "test passing map data to a map references"() {
-//    }
-//
-//    def "expect an exception when you pass list or singular values to map references"() {
-//    }
-//
-//    def "support includes"() {
-//    }
 }

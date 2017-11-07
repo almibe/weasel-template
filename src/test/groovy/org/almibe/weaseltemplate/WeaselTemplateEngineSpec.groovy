@@ -27,6 +27,7 @@ import java.nio.file.Paths
 class WeaselTemplateEngineSpec extends Specification {
     @Shared def templateEngine = new WeaselTemplateEngine(this.class.classLoader)
     @Shared JsonObject data = new JsonObject()
+    @Shared Helper helper = new Helper()
 
     def setup() {
         data.addProperty("name", "Alex")
@@ -52,7 +53,7 @@ class WeaselTemplateEngineSpec extends Specification {
         when:
         String result = templateEngine.processTemplate("01-text.test", data)
         then:
-        contentCompare(expectedResult, result)
+        helper.contentCompare(expectedResult, result)
     }
 
     def "support basic variables"() {
@@ -61,7 +62,7 @@ class WeaselTemplateEngineSpec extends Specification {
         when:
         String result = templateEngine.processTemplate("02-scalar.test", data)
         then:
-        contentCompare(expectedResult, result)
+        helper.contentCompare(expectedResult, result)
     }
 
     def "expect an exception when you pass list or map data to a singular reference"() {
@@ -81,7 +82,7 @@ class WeaselTemplateEngineSpec extends Specification {
         when:
         String result = templateEngine.processTemplate("03-conditional.test", data)
         then:
-        contentCompare(expectedResult, result)
+        helper.contentCompare(expectedResult, result)
     }
 //
 //    def "test passing list data to a list references"() {
