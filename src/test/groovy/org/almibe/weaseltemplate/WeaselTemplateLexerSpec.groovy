@@ -16,18 +16,49 @@
 
 package org.almibe.weaseltemplate
 
-import com.google.gson.JsonArray
-import com.google.gson.JsonObject
 import spock.lang.Shared
 import spock.lang.Specification
-
-import java.nio.file.Files
-import java.nio.file.Paths
+import java.util.stream.Stream
 
 class WeaselTemplateLexerSpec extends Specification {
     @Shared def templateLexer = new WeaselTemplateLexer()
     @Shared def helper = new Helper()
 
     def setup() {
+    }
+
+    def "test lexing simple scalar variables"() {
+        given:
+        Stream<String> statement = ["This is a <?test>."].stream()
+        when:
+        List<Template> result = templateLexer.tokenize(statement)
+        then:
+        result.size() == 3
+    }
+
+    def "test lexing simple if statements"() {
+        given:
+        Stream<String> statement = ["<?if user.isAdmin>Hey<?else>Hi<?endif>"].stream()
+        when:
+        List<Template> result = templateLexer.tokenize(statement)
+        then:
+        result.size() == 5
+    }
+
+    def "test lexing nested if statements"() {
+        given:
+        Stream<String> statement = [
+                "<?if user.isLoggedIn>",
+                "  <?if user.isAdmin><?include 'admin.wt'>",
+                "  <?elseif user.isMod><?include 'mod.wt'>",
+                "  <?else>Hello<?endif>",
+                "<?else>",
+                "  <?include 'login.wt'>",
+                "<?endif>"
+        ].stream()
+        when:
+        List<Template> result = templateLexer.tokenize(statement)
+        then:
+        result.size() == 15
     }
 }
