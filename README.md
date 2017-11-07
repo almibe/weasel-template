@@ -23,7 +23,7 @@ A minimalist template engine for the JVM based on JSON &amp; implemented in Kotl
 
 ## Syntax
 
-Template files are regular text files with Weasel Template markup wrapped in `<?>`'s.
+Template files are regular text files with Weasel Template markup wrapped in angle brackets that start with a single ?.
 
 ```html
 <?include 'header.wt' user>
