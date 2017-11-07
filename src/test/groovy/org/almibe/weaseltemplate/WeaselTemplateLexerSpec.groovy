@@ -59,6 +59,6 @@ class WeaselTemplateLexerSpec extends Specification {
         when:
         List<Template> result = templateLexer.tokenize(statement)
         then:
-        result.size() == 15
+        result.size() == 11
     }
 }
