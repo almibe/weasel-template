@@ -37,6 +37,10 @@ class WeaselTemplateEngine(private val classLoader: ClassLoader) {
             newTemplate.apply(data)
         }
     }
+
+    fun clearCache() {
+        templateCache.clear()
+    }
 }
 
 private data class NamedTemplate(val templateName: String, private val content: List<Template>) {
