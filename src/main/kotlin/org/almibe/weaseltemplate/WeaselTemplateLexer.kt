@@ -48,7 +48,7 @@ class WeaselTemplateLexer {
         if (iterator.hasNext()) {
             val nextCharacter = iterator.nextChar()
             if (nextCharacter == specialCharacter) {
-                if (!instanceValues.consumed.isEmpty()) { //if there is already a text token being build up add it
+                if (instanceValues.consumed.isNotBlank()) { //if there is already a text token being build up add it
                     createTextToken(instanceValues)
                 }
                 readWeaselTemplateTag(iterator, instanceValues)
@@ -98,7 +98,7 @@ class WeaselTemplateLexer {
     private fun createTextToken(instanceValues: TokenizingInstanceValues) {
         val tokenValue = instanceValues.consumed.toString()
         instanceValues.consumed.setLength(0) //clear
-        if (tokenValue.trim().isNotEmpty()) {
+        if (tokenValue.isNotBlank()) {
             instanceValues.templates.add(TextTemplate(tokenValue))
         }
     }
