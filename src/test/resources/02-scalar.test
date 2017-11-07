@@ -1,5 +1,5 @@
-<$name>
-$<$name>$
-<$name> with text.
-<$name> is <$age>.
-<$address.city>
+<?name>
+?<?name>?
+<?name> with text.
+<?name> is <?age>.
+<?address.city>

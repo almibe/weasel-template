@@ -1,22 +1,22 @@
 This should be visible
-<$if adminUser>
+<?if adminUser>
 Admin user
-<$else>
+<?else>
 Not and admin user
-<$end if>
+<?end if>
 
-<$if name><$name><$end if>
+<?if name><?name><?end if>
 
-<$if nested>
-  <$if nested.boolean>
+<?if nested>
+  <?if nested.boolean>
     Hey
-  <$end if>
-<$end if>
+  <?end if>
+<?end if>
 
-<$if false>
+<?if false>
   This won't print.
-<$elseif true>
+<?elseif true>
   This will print.
-<$else>
+<?else>
   This won't print.
-<$end if>
+<?end if>
