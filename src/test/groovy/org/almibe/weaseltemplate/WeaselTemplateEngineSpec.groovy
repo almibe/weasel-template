@@ -41,7 +41,7 @@ class WeaselTemplateEngineSpec extends Specification {
         given:
         WeaselTemplateParser parser = new WeaselTemplateParser()
         when:
-        List<Template> tokens = parser.tokenize(Files.lines(Paths.get("src/test/resources/01-text.result")))
+        List<Template> tokens = parser.parse(Files.lines(Paths.get("src/test/resources/01-text.result")))
         then:
         tokens.size() == 1
         tokens.first() instanceof TextTemplate

@@ -31,7 +31,7 @@ class WeaselTemplateParserSpec extends Specification {
         given:
         Stream<String> statement = ["This is a <?test>."].stream()
         when:
-        List<Template> result = templateParser.tokenize(statement)
+        List<Template> result = templateParser.parse(statement)
         then:
         result.size() == 3
     }
@@ -40,7 +40,7 @@ class WeaselTemplateParserSpec extends Specification {
         given:
         Stream<String> statement = ["<?if user.isAdmin>Hey<?else>Hi<?endif>"].stream()
         when:
-        List<Template> result = templateParser.tokenize(statement)
+        List<Template> result = templateParser.parse(statement)
         then:
         result.size() == 1
     }
@@ -57,7 +57,7 @@ class WeaselTemplateParserSpec extends Specification {
                 "<?endif>"
         ].stream()
         when:
-        List<Template> result = templateParser.tokenize(statement)
+        List<Template> result = templateParser.parse(statement)
         then:
         result.size() == 1
     }
@@ -66,7 +66,7 @@ class WeaselTemplateParserSpec extends Specification {
         given:
         Stream<String> statement = ["Hello<?if user>&nbsp;<?user.name><?end if>!"].stream()
         when:
-        List<Template> result = templateParser.tokenize(statement)
+        List<Template> result = templateParser.parse(statement)
         then:
         result.size() == 3
     }

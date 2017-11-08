@@ -26,7 +26,7 @@ class WeaselTemplateParser {
             val lineNumber: Int = 0
     )
 
-    fun tokenize(lines: Stream<String>): List<Template> {
+    fun parse(lines: Stream<String>): List<Template> {
         val instanceValues = WeaselTemplateParser.TokenizingInstanceValues()
         lines.forEach { line: String ->
             val iterator = line.toCharArray().iterator()
