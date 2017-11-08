@@ -111,13 +111,13 @@ class WeaselTemplateLexer {
     private fun createIfToken(tagTokens: List<String>, instanceValues: TokenizingInstanceValues) {
         assert(tagTokens.first() == "if")
         assert(tagTokens.size == 2)
-        instanceValues.templates.add(IfTemplate(tagTokens.component2()))
+        instanceValues.templates.add(ConditionalTemplate(tagTokens.component2()))
     }
 
     private fun createElseIfToken(tagTokens: List<String>, instanceValues: TokenizingInstanceValues) {
         assert(tagTokens.first() == "elseif")
         assert(tagTokens.size == 2)
-        instanceValues.templates.add(ElseIfTemplate(tagTokens.component2()))
+        instanceValues.templates.add(ConditionalTemplate(tagTokens.component2()))
     }
 
     private fun createElseToken(tagTokens: List<String>, instanceValues: TokenizingInstanceValues) {

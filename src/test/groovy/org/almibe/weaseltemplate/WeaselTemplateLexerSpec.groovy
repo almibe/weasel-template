@@ -42,7 +42,7 @@ class WeaselTemplateLexerSpec extends Specification {
         when:
         List<Template> result = templateLexer.tokenize(statement)
         then:
-        result.size() == 5
+        result.size() == 1
     }
 
     def "test lexing nested if statements"() {
@@ -59,6 +59,19 @@ class WeaselTemplateLexerSpec extends Specification {
         when:
         List<Template> result = templateLexer.tokenize(statement)
         then:
-        result.size() == 11
+        result.size() == 1
     }
+
+    def "test lexing inline if"() {
+        given:
+        Stream<String> statement = ["Hello<?if user>&nbsp;<?user.name><?end if>!"].stream()
+        when:
+        List<Template> result = templateLexer.tokenize(statement)
+        then:
+        result.size() == 3
+    }
+    //TODO test lexing each
+    //TODO test lexing nested each
+    //TODO test lexing complex conditional + each
+    //TODO consider renaming lexer to parser
 }
