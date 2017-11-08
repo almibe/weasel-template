@@ -18,7 +18,7 @@ package org.almibe.weaseltemplate
 
 import java.util.stream.Stream
 
-class WeaselTemplateLexer {
+class WeaselTemplateParser {
     private val specialCharacter = '?'
     private data class TokenizingInstanceValues(
             val consumed: StringBuilder = StringBuilder(),
@@ -27,7 +27,7 @@ class WeaselTemplateLexer {
     )
 
     fun tokenize(lines: Stream<String>): List<Template> {
-        val instanceValues = WeaselTemplateLexer.TokenizingInstanceValues()
+        val instanceValues = WeaselTemplateParser.TokenizingInstanceValues()
         lines.forEach { line: String ->
             val iterator = line.toCharArray().iterator()
             while (iterator.hasNext()) {

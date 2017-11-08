@@ -20,32 +20,32 @@ import spock.lang.Shared
 import spock.lang.Specification
 import java.util.stream.Stream
 
-class WeaselTemplateLexerSpec extends Specification {
-    @Shared def templateLexer = new WeaselTemplateLexer()
+class WeaselTemplateParserSpec extends Specification {
+    @Shared def templateParser = new WeaselTemplateParser()
     @Shared def helper = new Helper()
 
     def setup() {
     }
 
-    def "test lexing simple scalar variables"() {
+    def "test parsing simple scalar variables"() {
         given:
         Stream<String> statement = ["This is a <?test>."].stream()
         when:
-        List<Template> result = templateLexer.tokenize(statement)
+        List<Template> result = templateParser.tokenize(statement)
         then:
         result.size() == 3
     }
 
-    def "test lexing simple if statements"() {
+    def "test parsing simple if statements"() {
         given:
         Stream<String> statement = ["<?if user.isAdmin>Hey<?else>Hi<?endif>"].stream()
         when:
-        List<Template> result = templateLexer.tokenize(statement)
+        List<Template> result = templateParser.tokenize(statement)
         then:
         result.size() == 1
     }
 
-    def "test lexing nested if statements"() {
+    def "test parsing nested if statements"() {
         given:
         Stream<String> statement = [
                 "<?if user.isLoggedIn>",
@@ -57,21 +57,20 @@ class WeaselTemplateLexerSpec extends Specification {
                 "<?endif>"
         ].stream()
         when:
-        List<Template> result = templateLexer.tokenize(statement)
+        List<Template> result = templateParser.tokenize(statement)
         then:
         result.size() == 1
     }
 
-    def "test lexing inline if"() {
+    def "test parsing inline if"() {
         given:
         Stream<String> statement = ["Hello<?if user>&nbsp;<?user.name><?end if>!"].stream()
         when:
-        List<Template> result = templateLexer.tokenize(statement)
+        List<Template> result = templateParser.tokenize(statement)
         then:
         result.size() == 3
     }
-    //TODO test lexing each
-    //TODO test lexing nested each
-    //TODO test lexing complex conditional + each
-    //TODO consider renaming lexer to parser
+    //TODO test parsing each
+    //TODO test parsing nested each
+    //TODO test parsing complex conditional + each
 }

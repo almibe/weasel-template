@@ -39,9 +39,9 @@ class WeaselTemplateEngineSpec extends Specification {
 
     def "test basic tokenizing"() {
         given:
-        WeaselTemplateLexer lexer = new WeaselTemplateLexer()
+        WeaselTemplateParser parser = new WeaselTemplateParser()
         when:
-        List<Template> tokens = lexer.tokenize(Files.lines(Paths.get("src/test/resources/01-text.result")))
+        List<Template> tokens = parser.tokenize(Files.lines(Paths.get("src/test/resources/01-text.result")))
         then:
         tokens.size() == 1
         tokens.first() instanceof TextTemplate
