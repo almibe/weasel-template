@@ -21,7 +21,7 @@ import java.nio.file.Files
 import java.nio.file.Paths
 
 class WeaselTemplateEngine(private val classLoader: ClassLoader) {
-    private val templateCache: MutableMap<String, NamedTemplate> = mutableMapOf()
+    private val templateCache: MutableMap<String, Template> = mutableMapOf()
     private val parser = WeaselTemplateParser()
 
     fun processTemplate(templateName: String, data: JsonObject): String {
@@ -32,7 +32,7 @@ class WeaselTemplateEngine(private val classLoader: ClassLoader) {
             val path = Paths.get(classLoader.getResource(templateName).toURI())
             val lines = Files.lines(path)
             val tokens = parser.parse(lines)
-            val newTemplate = NamedTemplate(templateName, tokens)
+            val newTemplate = Template(templateName, tokens)
             templateCache[templateName] = newTemplate
             newTemplate.apply(data)
         }
@@ -40,21 +40,5 @@ class WeaselTemplateEngine(private val classLoader: ClassLoader) {
 
     fun clearCache() {
         templateCache.clear()
-    }
-}
-
-private data class NamedTemplate(val templateName: String, private val content: List<SubTemplate>) {
-    fun apply(data: JsonObject): String {
-        val stringBuilder = StringBuilder()
-        val iterator = content.iterator()
-        handleTemplates(iterator, data, stringBuilder)
-        return stringBuilder.toString()
-    }
-
-    private fun handleTemplates(iterator: Iterator<SubTemplate>, data: JsonObject, stringBuilder: StringBuilder) {
-        while(iterator.hasNext()) {
-            val template = iterator.next()
-            template.apply(data, stringBuilder)
-        }
     }
 }

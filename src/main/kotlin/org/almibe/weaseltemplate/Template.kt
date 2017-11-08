@@ -16,4 +16,20 @@
 
 package org.almibe.weaseltemplate
 
-//class SubTemplate
+import com.google.gson.JsonObject
+
+data class Template(val templateName: String, private val content: List<SubTemplate>) {
+    fun apply(data: JsonObject): String {
+        val stringBuilder = StringBuilder()
+        val iterator = content.iterator()
+        handleTemplates(iterator, data, stringBuilder)
+        return stringBuilder.toString()
+    }
+
+    private fun handleTemplates(iterator: Iterator<SubTemplate>, data: JsonObject, stringBuilder: StringBuilder) {
+        while(iterator.hasNext()) {
+            val template = iterator.next()
+            template.apply(data, stringBuilder)
+        }
+    }
+}
