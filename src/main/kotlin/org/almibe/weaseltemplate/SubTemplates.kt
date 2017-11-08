@@ -22,14 +22,15 @@ interface SubTemplate {
     fun apply(data: JsonObject, stringBuilder: StringBuilder)
 }
 
-data class TextSubTemplate(val content: String): SubTemplate { // TextSubTemplate("hello")
+data class TextSubTemplate(val content: String): SubTemplate {
     override fun apply(data: JsonObject, stringBuilder: StringBuilder) {
         stringBuilder.append(content)
     }
 }
-data class ScalarSubTemplate(val name: String): SubTemplate { // ScalarSubTemplate("user.address.city")
+
+data class ScalarSubTemplate(val selector: String): SubTemplate {
     override fun apply(data: JsonObject, stringBuilder: StringBuilder) {
-        val names = name.split(".")
+        val names = selector.split(".")
         var current: JsonObject = data
         names.forEach {
             val element = current.get(it)
@@ -43,6 +44,7 @@ data class ScalarSubTemplate(val name: String): SubTemplate { // ScalarSubTempla
         }
     }
 }
+
 data class IfSubTemplate(val conditionTemplates: List<ConditionalSubTemplate>, val elseTemplate: ElseSubTemplate?): SubTemplate {
     override fun apply(data: JsonObject, stringBuilder: StringBuilder) {
         conditionTemplates.forEach { conditionTemplate ->
@@ -55,9 +57,10 @@ data class IfSubTemplate(val conditionTemplates: List<ConditionalSubTemplate>, v
         }
     }
 }
-data class ConditionalSubTemplate(val condition: String): SubTemplate { // ConditionalSubTemplate("user.isAdmin")
+
+data class ConditionalSubTemplate(val conditionSelector: String, val content: List<SubTemplate>): SubTemplate {
     fun testCondition(data: JsonObject): Boolean {
-        val names = condition.split(".")
+        val names = conditionSelector.split(".")
         var current: JsonObject = data
         val itr = names.iterator()
         while (itr.hasNext()) {
@@ -70,20 +73,23 @@ data class ConditionalSubTemplate(val condition: String): SubTemplate { // Condi
         return false
     }
     override fun apply(data: JsonObject, stringBuilder: StringBuilder) {
-        TODO()
+        content.forEach { it.apply(data, stringBuilder) }
     }
 }
-class ElseSubTemplate : SubTemplate { // ElseSubTemplate()
+
+data class ElseSubTemplate(val content: List<SubTemplate>) : SubTemplate {
+    override fun apply(data: JsonObject, stringBuilder: StringBuilder) {
+        content.forEach { it.apply(data, stringBuilder) }
+    }
+}
+
+data class EachSubTemplate(val listSelector: String, val iteratorName: String, val content: List<SubTemplate>): SubTemplate { // EachSubTemplate("users", "user")
     override fun apply(data: JsonObject, stringBuilder: StringBuilder) {
         TODO()
     }
 }
-data class EachSubTemplate(val list: String, val iteratorName: String): SubTemplate { // EachSubTemplate("users", "user")
-    override fun apply(data: JsonObject, stringBuilder: StringBuilder) {
-        TODO()
-    }
-}
-data class IncludeSubTemplate(val name: String, val argument: String? = null): SubTemplate { // IncludeSubTemplate("adminTemplate.wt", "user")
+
+data class IncludeSubTemplate(val fileName: String, val argumentSelector: String? = null): SubTemplate { // IncludeSubTemplate("adminTemplate.wt", "user")
     override fun apply(data: JsonObject, stringBuilder: StringBuilder) {
         TODO()
     }
