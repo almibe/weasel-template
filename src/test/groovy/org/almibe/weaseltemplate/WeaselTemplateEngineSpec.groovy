@@ -41,10 +41,10 @@ class WeaselTemplateEngineSpec extends Specification {
         given:
         WeaselTemplateParser parser = new WeaselTemplateParser()
         when:
-        List<Template> tokens = parser.parse(Files.lines(Paths.get("src/test/resources/01-text.result")))
+        List<SubTemplate> tokens = parser.parse(Files.lines(Paths.get("src/test/resources/01-text.result")))
         then:
         tokens.size() == 1
-        tokens.first() instanceof TextTemplate
+        tokens.first() instanceof TextSubTemplate
     }
 
     def "handle plain files"() {

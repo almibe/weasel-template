@@ -18,16 +18,16 @@ package org.almibe.weaseltemplate
 
 import com.google.gson.JsonObject
 
-interface Template {
+interface SubTemplate {
     fun apply(data: JsonObject, stringBuilder: StringBuilder)
 }
 
-data class TextTemplate(val content: String): Template { // TextTemplate("hello")
+data class TextSubTemplate(val content: String): SubTemplate { // TextSubTemplate("hello")
     override fun apply(data: JsonObject, stringBuilder: StringBuilder) {
         stringBuilder.append(content)
     }
 }
-data class ScalarTemplate(val name: String): Template { // ScalarTemplate("user.address.city")
+data class ScalarSubTemplate(val name: String): SubTemplate { // ScalarSubTemplate("user.address.city")
     override fun apply(data: JsonObject, stringBuilder: StringBuilder) {
         val names = name.split(".")
         var current: JsonObject = data
@@ -43,7 +43,7 @@ data class ScalarTemplate(val name: String): Template { // ScalarTemplate("user.
         }
     }
 }
-data class IfTemplate(val conditionTemplates: List<ConditionalTemplate>, val elseTemplate: ElseTemplate?): Template {
+data class IfSubTemplate(val conditionTemplates: List<ConditionalSubTemplate>, val elseTemplate: ElseSubTemplate?): SubTemplate {
     override fun apply(data: JsonObject, stringBuilder: StringBuilder) {
         conditionTemplates.forEach { conditionTemplate ->
             if (conditionTemplate.testCondition(data)) {
@@ -55,7 +55,7 @@ data class IfTemplate(val conditionTemplates: List<ConditionalTemplate>, val els
         }
     }
 }
-data class ConditionalTemplate(val condition: String): Template { // ConditionalTemplate("user.isAdmin")
+data class ConditionalSubTemplate(val condition: String): SubTemplate { // ConditionalSubTemplate("user.isAdmin")
     fun testCondition(data: JsonObject): Boolean {
         val names = condition.split(".")
         var current: JsonObject = data
@@ -73,17 +73,17 @@ data class ConditionalTemplate(val condition: String): Template { // Conditional
         TODO()
     }
 }
-class ElseTemplate : Template { // ElseTemplate()
+class ElseSubTemplate : SubTemplate { // ElseSubTemplate()
     override fun apply(data: JsonObject, stringBuilder: StringBuilder) {
         TODO()
     }
 }
-data class EachTemplate(val list: String, val iteratorName: String): Template { // EachTemplate("users", "user")
+data class EachSubTemplate(val list: String, val iteratorName: String): SubTemplate { // EachSubTemplate("users", "user")
     override fun apply(data: JsonObject, stringBuilder: StringBuilder) {
         TODO()
     }
 }
-data class IncludeTemplate(val name: String, val argument: String? = null): Template { // IncludeTemplate("adminTemplate.wt", "user")
+data class IncludeSubTemplate(val name: String, val argument: String? = null): SubTemplate { // IncludeSubTemplate("adminTemplate.wt", "user")
     override fun apply(data: JsonObject, stringBuilder: StringBuilder) {
         TODO()
     }

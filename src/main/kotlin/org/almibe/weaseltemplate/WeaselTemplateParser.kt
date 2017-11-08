@@ -22,11 +22,11 @@ class WeaselTemplateParser {
     private val specialCharacter = '?'
     private data class TokenizingInstanceValues(
             val consumed: StringBuilder = StringBuilder(),
-            val templates: MutableList<Template> = mutableListOf(),
+            val subTemplates: MutableList<SubTemplate> = mutableListOf(),
             val lineNumber: Int = 0
     )
 
-    fun parse(lines: Stream<String>): List<Template> {
+    fun parse(lines: Stream<String>): List<SubTemplate> {
         val instanceValues = WeaselTemplateParser.TokenizingInstanceValues()
         lines.forEach { line: String ->
             val iterator = line.toCharArray().iterator()
@@ -41,7 +41,7 @@ class WeaselTemplateParser {
             instanceValues.consumed.append("\n")
         }
         createTextToken(instanceValues) //create a text token with remaining value
-        return instanceValues.templates
+        return instanceValues.subTemplates
     }
 
     private fun checkTag(iterator: CharIterator, instanceValues: TokenizingInstanceValues) {
@@ -64,11 +64,8 @@ class WeaselTemplateParser {
         val tagTokens: List<String> = splitTagText(iterator, instanceValues)
         when (tagTokens.first()) {
             "if" -> createIfToken(tagTokens, instanceValues)
-            "elseif" -> createElseIfToken(tagTokens, instanceValues)
-            "else" -> createElseToken(tagTokens, instanceValues)
             "include" -> createIncludeToken(tagTokens, instanceValues)
             "each" -> createEachToken(tagTokens, instanceValues)
-            "end" -> createEndToken(tagTokens, instanceValues)
             else -> createScalarToken(tagTokens, instanceValues)
         }
     }
@@ -99,39 +96,39 @@ class WeaselTemplateParser {
         val tokenValue = instanceValues.consumed.toString()
         instanceValues.consumed.setLength(0) //clear
         if (tokenValue.isNotBlank()) {
-            instanceValues.templates.add(TextTemplate(tokenValue))
+            instanceValues.subTemplates.add(TextSubTemplate(tokenValue))
         }
     }
 
     private fun createScalarToken(tagTokens: List<String>, instanceValues: TokenizingInstanceValues) {
         assert(tagTokens.size == 1)
-        instanceValues.templates.add(ScalarTemplate(tagTokens.first()))
+        instanceValues.subTemplates.add(ScalarSubTemplate(tagTokens.first()))
     }
 
     private fun createIfToken(tagTokens: List<String>, instanceValues: TokenizingInstanceValues) {
         assert(tagTokens.first() == "if")
         assert(tagTokens.size == 2)
-        instanceValues.templates.add(ConditionalTemplate(tagTokens.component2()))
+        instanceValues.subTemplates.add(ConditionalSubTemplate(tagTokens.component2()))
     }
 
     private fun createElseIfToken(tagTokens: List<String>, instanceValues: TokenizingInstanceValues) {
         assert(tagTokens.first() == "elseif")
         assert(tagTokens.size == 2)
-        instanceValues.templates.add(ConditionalTemplate(tagTokens.component2()))
+        instanceValues.subTemplates.add(ConditionalSubTemplate(tagTokens.component2()))
     }
 
     private fun createElseToken(tagTokens: List<String>, instanceValues: TokenizingInstanceValues) {
         assert(tagTokens.first() == "else")
         assert(tagTokens.size == 1)
-        instanceValues.templates.add(ElseTemplate())
+        instanceValues.subTemplates.add(ElseSubTemplate())
     }
 
     private fun createIncludeToken(tagTokens: List<String>, instanceValues: TokenizingInstanceValues) {
         assert(tagTokens.first() == "include")
         assert(tagTokens.size == 2 || tagTokens.size == 3)
         when (tagTokens.size) {
-            2 -> instanceValues.templates.add(IncludeTemplate(tagTokens.component2()))
-            3 -> instanceValues.templates.add(IncludeTemplate(tagTokens.component2(), tagTokens.component3()))
+            2 -> instanceValues.subTemplates.add(IncludeSubTemplate(tagTokens.component2()))
+            3 -> instanceValues.subTemplates.add(IncludeSubTemplate(tagTokens.component2(), tagTokens.component3()))
             else -> RuntimeException("Unexpected value")
         }
     }
@@ -140,7 +137,7 @@ class WeaselTemplateParser {
         assert(tagTokens.first() == "each")
         assert(tagTokens.component3() == "as")
         assert(tagTokens.size == 4)
-        instanceValues.templates.add(EachTemplate(tagTokens.component2(), tagTokens.component4()))
+        instanceValues.subTemplates.add(EachSubTemplate(tagTokens.component2(), tagTokens.component4()))
     }
 
     private fun createEndToken(tagTokens: List<String>, instanceValues: TokenizingInstanceValues) {
@@ -148,8 +145,8 @@ class WeaselTemplateParser {
         assert(tagTokens.component2() == "if" || tagTokens.component2() == "each")
         assert(tagTokens.size == 2)
         when (tagTokens.component2()) {
-//            "if" -> instanceValues.templates.add(EndIfTemplate())
-//            "each" -> instanceValues.templates.add(EndEachTemplate())
+//            "if" -> instanceValues.subTemplates.add(EndIfTemplate())
+//            "each" -> instanceValues.subTemplates.add(EndEachTemplate())
             else -> RuntimeException("Unexpected value")
         }
     }

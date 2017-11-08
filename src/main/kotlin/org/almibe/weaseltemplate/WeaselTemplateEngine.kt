@@ -43,7 +43,7 @@ class WeaselTemplateEngine(private val classLoader: ClassLoader) {
     }
 }
 
-private data class NamedTemplate(val templateName: String, private val content: List<Template>) {
+private data class NamedTemplate(val templateName: String, private val content: List<SubTemplate>) {
     fun apply(data: JsonObject): String {
         val stringBuilder = StringBuilder()
         val iterator = content.iterator()
@@ -51,7 +51,7 @@ private data class NamedTemplate(val templateName: String, private val content: 
         return stringBuilder.toString()
     }
 
-    private fun handleTemplates(iterator: Iterator<Template>, data: JsonObject, stringBuilder: StringBuilder) {
+    private fun handleTemplates(iterator: Iterator<SubTemplate>, data: JsonObject, stringBuilder: StringBuilder) {
         while(iterator.hasNext()) {
             val template = iterator.next()
             template.apply(data, stringBuilder)
