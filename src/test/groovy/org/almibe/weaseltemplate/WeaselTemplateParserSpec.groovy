@@ -19,14 +19,11 @@ package org.almibe.weaseltemplate
 import org.almibe.weaseltemplate.lexer.*
 import spock.lang.Shared
 import spock.lang.Specification
-
-import javax.xml.soap.Text
 import java.util.stream.Stream
 
 class WeaselTemplateParserSpec extends Specification {
     @Shared def templateParser = new WeaselTemplateParser()
     @Shared def templateLexer = new WeaselTemplateLexer()
-    @Shared def helper = new Helper()
 
     def "test parsing simple scalar variables"() {
         given:
