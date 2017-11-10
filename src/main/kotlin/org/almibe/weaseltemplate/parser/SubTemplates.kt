@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.almibe.weaseltemplate
+package org.almibe.weaseltemplate.parser
 
 import com.google.gson.JsonObject
 

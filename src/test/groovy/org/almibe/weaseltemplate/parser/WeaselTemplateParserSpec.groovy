@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.almibe.weaseltemplate
+package org.almibe.weaseltemplate.parser
 
 import org.almibe.weaseltemplate.lexer.*
 import spock.lang.Shared

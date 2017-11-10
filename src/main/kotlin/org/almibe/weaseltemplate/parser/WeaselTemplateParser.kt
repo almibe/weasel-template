@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.almibe.weaseltemplate
+package org.almibe.weaseltemplate.parser
 
 import org.almibe.weaseltemplate.lexer.*
 import java.util.*
@@ -35,13 +35,13 @@ class WeaselTemplateParser {
     }
 
     private data class ParserInstanceValues(
-        val subTemplates: MutableList<SubTemplate> = mutableListOf(),
-        val lineNumber: Int = 0,
-        val ifTemplateBuilders: Deque<IfSubTemplateBuilder> = ArrayDeque()
+            val subTemplates: MutableList<SubTemplate> = mutableListOf(),
+            val lineNumber: Int = 0,
+            val ifTemplateBuilders: Deque<IfSubTemplateBuilder> = ArrayDeque()
     )
 
     fun parse(tokens: List<Token>): List<SubTemplate> {
-        val instanceValues = WeaselTemplateParser.ParserInstanceValues()
+        val instanceValues = ParserInstanceValues()
         val it = tokens.iterator()
         while(it.hasNext()) {
             val token = it.next()

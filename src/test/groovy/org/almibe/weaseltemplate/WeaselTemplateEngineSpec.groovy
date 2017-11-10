@@ -18,6 +18,9 @@ package org.almibe.weaseltemplate
 
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
+import org.almibe.weaseltemplate.parser.SubTemplate
+import org.almibe.weaseltemplate.parser.TextSubTemplate
+import org.almibe.weaseltemplate.parser.WeaselTemplateParser
 import spock.lang.Shared
 import spock.lang.Specification
 

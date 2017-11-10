@@ -18,6 +18,8 @@ package org.almibe.weaseltemplate
 
 import com.google.gson.JsonObject
 import org.almibe.weaseltemplate.lexer.WeaselTemplateLexer
+import org.almibe.weaseltemplate.parser.Template
+import org.almibe.weaseltemplate.parser.WeaselTemplateParser
 import java.nio.file.Files
 import java.nio.file.Paths
 
