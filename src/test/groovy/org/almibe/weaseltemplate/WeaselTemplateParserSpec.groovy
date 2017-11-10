@@ -25,6 +25,17 @@ class WeaselTemplateParserSpec extends Specification {
     @Shared def templateParser = new WeaselTemplateParser()
     @Shared def templateLexer = new WeaselTemplateLexer()
 
+    def "test parsing simple text token"() {
+        given:
+        List<Token> tokens = [
+                new TextToken("Test")
+        ]
+        when:
+        List<SubTemplate> result = templateParser.parse(tokens)
+        then:
+        result.size() == 1
+    }
+
     def "test parsing simple scalar variables"() {
         given:
         List<Token> tokens = [

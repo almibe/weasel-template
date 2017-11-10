@@ -35,7 +35,6 @@ class WeaselTemplateParser {
     }
 
     private data class ParserInstanceValues(
-        val consumed: StringBuilder = StringBuilder(),
         val subTemplates: MutableList<SubTemplate> = mutableListOf(),
         val lineNumber: Int = 0,
         val ifTemplateBuilders: Deque<IfSubTemplateBuilder> = ArrayDeque()
@@ -59,11 +58,7 @@ class WeaselTemplateParser {
     }
 
     private fun handleTextToken(token: TextToken, instanceValues: ParserInstanceValues) {
-        val tokenValue = instanceValues.consumed.toString()
-        instanceValues.consumed.setLength(0) //clear
-        if (tokenValue.isNotBlank()) {
-            instanceValues.subTemplates.add(TextSubTemplate(tokenValue))
-        }
+        instanceValues.subTemplates.add(TextSubTemplate(token.content))
     }
 
     private fun handleScalarToken(token: ScalarToken, instanceValues: ParserInstanceValues) {
