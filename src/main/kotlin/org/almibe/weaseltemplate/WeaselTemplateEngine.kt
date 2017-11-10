@@ -17,12 +17,14 @@
 package org.almibe.weaseltemplate
 
 import com.google.gson.JsonObject
+import org.almibe.weaseltemplate.lexer.WeaselTemplateLexer
 import java.nio.file.Files
 import java.nio.file.Paths
 
 class WeaselTemplateEngine(private val classLoader: ClassLoader) {
     private val templateCache: MutableMap<String, Template> = mutableMapOf()
     private val parser = WeaselTemplateParser()
+    private val lexer = WeaselTemplateLexer()
 
     fun processTemplate(templateName: String, data: JsonObject): String {
         val template = templateCache[templateName]
@@ -31,8 +33,9 @@ class WeaselTemplateEngine(private val classLoader: ClassLoader) {
         } else {
             val path = Paths.get(classLoader.getResource(templateName).toURI())
             val lines = Files.lines(path)
-            val tokens = parser.parse(lines)
-            val newTemplate = Template(templateName, tokens)
+            val tokens = lexer.lex(lines)
+            val templates = parser.parse(tokens)
+            val newTemplate = Template(templateName, templates)
             templateCache[templateName] = newTemplate
             newTemplate.apply(data)
         }

@@ -16,12 +16,10 @@
 
 package org.almibe.weaseltemplate
 
+import org.almibe.weaseltemplate.lexer.*
 import java.util.*
-import java.util.stream.Stream
 
 class WeaselTemplateParser {
-    private val specialCharacter = '?'
-
     private data class IfSubTemplateBuilder(val conditionalSubTemplates: MutableList<ConditionalSubTemplate>,
                                             var elseSubTemplate: ElseSubTemplate?) {
         fun createIfTemplate(): IfSubTemplate = IfSubTemplate(conditionalSubTemplates, elseSubTemplate)
@@ -43,76 +41,24 @@ class WeaselTemplateParser {
         val ifTemplateBuilders: Deque<IfSubTemplateBuilder> = ArrayDeque()
     )
 
-    fun parse(lines: Stream<String>): List<SubTemplate> {
+    fun parse(tokens: List<Token>): List<SubTemplate> {
         val instanceValues = WeaselTemplateParser.ParserInstanceValues()
-        lines.forEach { line: String ->
-            val iterator = line.toCharArray().iterator()
-            while (iterator.hasNext()) {
-                val nextCharacter = iterator.nextChar()
-                if (nextCharacter == '<') {
-                    checkTag(iterator, instanceValues)
-                } else {
-                    instanceValues.consumed.append(nextCharacter)
-                }
+        val it = tokens.iterator()
+        while(it.hasNext()) {
+            val token = it.next()
+            when(token) {
+                is TextToken -> handleTextToken(token, instanceValues)
+                is ScalarToken -> handleScalarToken(token, instanceValues)
+                is IfToken -> handleIfToken(token, it, instanceValues)
+                is EachToken -> handleEachToken(token, it, instanceValues)
+                is IncludeToken -> handleIncludeToken(token, instanceValues)
+                else -> throw RuntimeException("Unexpected token $token")
             }
-            instanceValues.consumed.append("\n")
         }
-        createTextToken(instanceValues) //create a text token with remaining value
         return instanceValues.subTemplates
     }
 
-    private fun checkTag(iterator: CharIterator, instanceValues: ParserInstanceValues) {
-        if (iterator.hasNext()) {
-            val nextCharacter = iterator.nextChar()
-            if (nextCharacter == specialCharacter) {
-                if (instanceValues.consumed.isNotEmpty()) { //if there is already a text token being build up add it
-                    createTextToken(instanceValues)
-                }
-                readWeaselTemplateTag(iterator, instanceValues)
-            } else {
-                instanceValues.consumed.append("<$nextCharacter")
-            }
-        } else {
-            throw RuntimeException("Invalid starting tag at end of file.")
-        }
-    }
-
-    private fun readWeaselTemplateTag(iterator: CharIterator, instanceValues: ParserInstanceValues) {
-        val tagTokens: List<String> = splitTagText(iterator, instanceValues)
-        when (tagTokens.first()) {
-            "if" -> handleIfToken(tagTokens, instanceValues)
-            "elseif" -> handleElseIfToken(tagTokens, instanceValues)
-            "else" -> handleElseToken(tagTokens, instanceValues)
-            "include" -> handleIncludeToken(tagTokens, instanceValues)
-            "each" -> handleEachToken(tagTokens, instanceValues)
-            "end" -> handleEndToken(tagTokens, instanceValues)
-            else -> handleScalarToken(tagTokens, instanceValues)
-        }
-    }
-
-    /**
-    * Returns a list of strings that represent current tag.
-    */
-    private fun splitTagText(iterator: CharIterator, instanceValues: ParserInstanceValues): List<String> {
-        while (iterator.hasNext()) {
-            val nextToken = iterator.nextChar()
-            if (nextToken != '>') {
-                instanceValues.consumed.append(nextToken)
-            } else {
-                break
-            }
-        }
-        val tagText = instanceValues.consumed.toString()
-        instanceValues.consumed.setLength(0)
-        val resultList = tagText.split(' ')
-        if (resultList.isEmpty()) {
-            throw RuntimeException("Empty tag on line ${instanceValues.lineNumber}")
-        } else {
-            return resultList
-        }
-    }
-
-    private fun createTextToken(instanceValues: ParserInstanceValues) {
+    private fun handleTextToken(token: TextToken, instanceValues: ParserInstanceValues) {
         val tokenValue = instanceValues.consumed.toString()
         instanceValues.consumed.setLength(0) //clear
         if (tokenValue.isNotBlank()) {
@@ -120,54 +66,21 @@ class WeaselTemplateParser {
         }
     }
 
-    private fun handleScalarToken(tagTokens: List<String>, instanceValues: ParserInstanceValues) {
-        assert(tagTokens.size == 1)
-        instanceValues.subTemplates.add(ScalarSubTemplate(tagTokens.first()))
+    private fun handleScalarToken(token: ScalarToken, instanceValues: ParserInstanceValues) {
+        instanceValues.subTemplates.add(ScalarSubTemplate(token.selector))
     }
 
-    private fun handleIfToken(tagTokens: List<String>, instanceValues: ParserInstanceValues) {
-        assert(tagTokens.first() == "if")
-        assert(tagTokens.size == 2)
-        instanceValues.subTemplates.add(ConditionalSubTemplate(tagTokens.component2(), listOf()))
+    private fun handleIfToken(token: IfToken, tokens: Iterator<Token>, instanceValues: ParserInstanceValues) {
+        TODO()
+        //instanceValues.subTemplates.add(ConditionalSubTemplate(tagTokens.component2(), listOf()))
     }
 
-    private fun handleElseIfToken(tagTokens: List<String>, instanceValues: ParserInstanceValues) {
-        assert(tagTokens.first() == "elseif")
-        assert(tagTokens.size == 2)
-//TODO        instanceValues.subTemplates.add(ConditionalSubTemplate(tagTokens.component2()))
+    private fun handleEachToken(token: EachToken, tokens: Iterator<Token>, instanceValues: ParserInstanceValues) {
+        TODO()
+        //instanceValues.subTemplates.add(EachSubTemplate(tagTokens.component2(), tagTokens.component4()))
     }
 
-    private fun handleElseToken(tagTokens: List<String>, instanceValues: ParserInstanceValues) {
-        assert(tagTokens.first() == "else")
-        assert(tagTokens.size == 1)
-//TODO        instanceValues.subTemplates.add(ElseSubTemplate())
-    }
-
-    private fun handleIncludeToken(tagTokens: List<String>, instanceValues: ParserInstanceValues) {
-        assert(tagTokens.first() == "include")
-        assert(tagTokens.size == 2 || tagTokens.size == 3)
-        when (tagTokens.size) {
-            2 -> instanceValues.subTemplates.add(IncludeSubTemplate(tagTokens.component2()))
-            3 -> instanceValues.subTemplates.add(IncludeSubTemplate(tagTokens.component2(), tagTokens.component3()))
-            else -> RuntimeException("Unexpected value")
-        }
-    }
-
-    private fun handleEachToken(tagTokens: List<String>, instanceValues: ParserInstanceValues) {
-        assert(tagTokens.first() == "each")
-        assert(tagTokens.component3() == "as")
-        assert(tagTokens.size == 4)
-//TODO        instanceValues.subTemplates.add(EachSubTemplate(tagTokens.component2(), tagTokens.component4()))
-    }
-
-    private fun handleEndToken(tagTokens: List<String>, instanceValues: ParserInstanceValues) {
-        assert(tagTokens.first() == "end")
-        assert(tagTokens.component2() == "if" || tagTokens.component2() == "each")
-        assert(tagTokens.size == 2)
-        when (tagTokens.component2()) {
-//            "if" -> instanceValues.subTemplates.add(EndIfTemplate())
-//            "each" -> instanceValues.subTemplates.add(EndEachTemplate())
-            else -> RuntimeException("Unexpected value")
-        }
+    private fun handleIncludeToken(token: IncludeToken, instanceValues: ParserInstanceValues) {
+        TODO()
     }
 }
