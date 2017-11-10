@@ -37,11 +37,11 @@ class WeaselTemplateLexerSpec extends Specification {
 
     def "test lexing simple if statements"() {
         given:
-        Stream<String> statement = ["<?if user.isAdmin>Hey<?else>Hi<?endif>"].stream()
+        Stream<String> statement = ["<?if user.isAdmin>Hey<?else>Hi<?end if>"].stream()
         when:
         List<Token> result = lexer.lex(statement)
         then:
-        result.size() == 5
+        result.size() == 6
     }
 
     def "test lexing nested if statements"() {
@@ -50,15 +50,15 @@ class WeaselTemplateLexerSpec extends Specification {
                 "<?if user.isLoggedIn>",
                 "  <?if user.isAdmin><?include 'admin.wt'>",
                 "  <?elseif user.isMod><?include 'mod.wt'>",
-                "  <?else>Hello<?endif>",
+                "  <?else>Hello<?end if>",
                 "<?else>",
                 "  <?include 'login.wt'>",
-                "<?endif>"
+                "<?end if>"
         ].stream()
         when:
         List<Token> result = lexer.lex(statement)
         then:
-        result.size() == 15
+        result.size() == 18
     }
 
     def "test lexing inline if"() {

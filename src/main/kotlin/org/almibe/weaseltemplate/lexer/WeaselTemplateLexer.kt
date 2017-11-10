@@ -41,7 +41,9 @@ class WeaselTemplateLexer {
             }
             instanceValues.consumed.append("\n")
         }
-        createTextToken(instanceValues) //create a text token with remaining value
+        if (instanceValues.consumed.isNotEmpty()) {
+            createTextToken(instanceValues) //create a text token with remaining value
+        }
         return instanceValues.tokens
     }
 
@@ -99,7 +101,7 @@ class WeaselTemplateLexer {
     private fun createTextToken(instanceValues: LexerInstanceValues) {
         val tokenValue = instanceValues.consumed.toString()
         instanceValues.consumed.setLength(0) //clear
-        if (tokenValue.isNotBlank()) {
+        if (tokenValue.isNotEmpty()) {
             instanceValues.tokens.add(TextToken(tokenValue))
         }
     }
