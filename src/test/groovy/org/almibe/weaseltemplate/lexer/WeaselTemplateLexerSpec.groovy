@@ -14,39 +14,37 @@
  * limitations under the License.
  */
 
-package org.almibe.weaseltemplate
+package org.almibe.weaseltemplate.lexer
 
+import org.almibe.weaseltemplate.lexer.Token
+import org.almibe.weaseltemplate.lexer.WeaselTemplateLexer
 import spock.lang.Shared
 import spock.lang.Specification
 
 import java.util.stream.Stream
 
 class WeaselTemplateLexerSpec extends Specification {
-    @Shared def templateParser = new WeaselTemplateParser()
-    @Shared def helper = new Helper()
+    @Shared def lexer = new WeaselTemplateLexer()
 
-    def setup() {
-    }
-
-    def "test parsing simple scalar variables"() {
+    def "test lexing simple scalar variables"() {
         given:
         Stream<String> statement = ["This is a <?test>."].stream()
         when:
-        List<SubTemplate> result = templateParser.parse(statement)
+        List<Token> result = lexer.lex(statement)
         then:
         result.size() == 3
     }
 
-    def "test parsing simple if statements"() {
+    def "test lexing simple if statements"() {
         given:
         Stream<String> statement = ["<?if user.isAdmin>Hey<?else>Hi<?endif>"].stream()
         when:
-        List<SubTemplate> result = templateParser.parse(statement)
+        List<Token> result = lexer.lex(statement)
         then:
-        result.size() == 1
+        result.size() == 5
     }
 
-    def "test parsing nested if statements"() {
+    def "test lexing nested if statements"() {
         given:
         Stream<String> statement = [
                 "<?if user.isLoggedIn>",
@@ -58,20 +56,20 @@ class WeaselTemplateLexerSpec extends Specification {
                 "<?endif>"
         ].stream()
         when:
-        List<SubTemplate> result = templateParser.parse(statement)
+        List<Token> result = lexer.lex(statement)
         then:
-        result.size() == 1
+        result.size() == 15
     }
 
-    def "test parsing inline if"() {
+    def "test lexing inline if"() {
         given:
-        Stream<String> statement = ["Hello<?if user>&nbsp;<?user.name><?end if>!"].stream()
+        Stream<String> statement = ["Hello<?if user> <?user.name><?end if>!"].stream()
         when:
-        List<SubTemplate> result = templateParser.parse(statement)
+        List<Token> result = lexer.lex(statement)
         then:
-        result.size() == 3
+        result.size() == 6
     }
-    //TODO test parsing each
-    //TODO test parsing nested each
-    //TODO test parsing complex conditional + each
+    //TODO test lexing each
+    //TODO test lexing nested each
+    //TODO test lexing complex conditional + each
 }
