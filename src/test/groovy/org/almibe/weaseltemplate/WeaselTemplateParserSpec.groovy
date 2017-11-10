@@ -16,31 +16,43 @@
 
 package org.almibe.weaseltemplate
 
+import org.almibe.weaseltemplate.lexer.*
 import spock.lang.Shared
 import spock.lang.Specification
+
+import javax.xml.soap.Text
 import java.util.stream.Stream
 
 class WeaselTemplateParserSpec extends Specification {
     @Shared def templateParser = new WeaselTemplateParser()
+    @Shared def templateLexer = new WeaselTemplateLexer()
     @Shared def helper = new Helper()
-
-    def setup() {
-    }
 
     def "test parsing simple scalar variables"() {
         given:
-        Stream<String> statement = ["This is a <?test>."].stream()
+        List<Token> tokens = [
+                new TextToken("This is a "),
+                new ScalarToken("test"),
+                new TextToken(".\n")
+        ]
         when:
-        List<SubTemplate> result = templateParser.parse(statement)
+        List<SubTemplate> result = templateParser.parse(tokens)
         then:
         result.size() == 3
     }
 
     def "test parsing simple if statements"() {
         given:
-        Stream<String> statement = ["<?if user.isAdmin>Hey<?else>Hi<?endif>"].stream()
+        List<Token> tokens = [
+                new IfToken("user.isAdmin"),
+                new TextToken("Hey"),
+                new ElseToken(),
+                new TextToken("Hi"),
+                new EndIfToken(),
+                new TextToken("\n")
+        ]
         when:
-        List<SubTemplate> result = templateParser.parse(statement)
+        List<SubTemplate> result = templateParser.parse(tokens)
         then:
         result.size() == 1
     }
@@ -56,17 +68,25 @@ class WeaselTemplateParserSpec extends Specification {
                 "  <?include 'login.wt'>",
                 "<?endif>"
         ].stream()
+        List<Token> tokens = templateLexer.lex(statement)
         when:
-        List<SubTemplate> result = templateParser.parse(statement)
+        List<SubTemplate> result = templateParser.parse(tokens)
         then:
         result.size() == 1
     }
 
     def "test parsing inline if"() {
         given:
-        Stream<String> statement = ["Hello<?if user>&nbsp;<?user.name><?end if>!"].stream()
+        List<Token> tokens = [
+                new TextToken("Hello"),
+                new IfToken("user"),
+                new TextToken(" "),
+                new ScalarToken("user.name"),
+                new EndIfToken(),
+                new TextToken("!\n")
+        ]
         when:
-        List<SubTemplate> result = templateParser.parse(statement)
+        List<SubTemplate> result = templateParser.parse(tokens)
         then:
         result.size() == 3
     }
