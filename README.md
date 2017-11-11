@@ -57,7 +57,7 @@ Below is a sample JSON document that could be used with the above template.
     "isAdmin" : true,
     "isRegularUser" : false,
     "name" : "Pat"
-  }
+  },
   "insults" : ["are a hamster", "smell of elderberries"]
 }
 ```
