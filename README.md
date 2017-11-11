@@ -66,7 +66,7 @@ Below is a sample JSON document that could be used with the above template.
 
 The following code example demonstrates the two public methods and single constructor that
 Weasel Template supplies.  All template files are loaded from the class loader passed into
-WeaselTemplateEngine's constructor.  Types are of coarse just there for the sake of documentation.
+WeaselTemplateEngine's constructor.  Types are only there for the sake of documentation.
 
 ```kotlin
 val engine = WeaselTemplateEngine(this.javaClass.classLoader) //cache is only in use if engine instance is reused
