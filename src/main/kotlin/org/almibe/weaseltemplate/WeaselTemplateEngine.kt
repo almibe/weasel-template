@@ -35,7 +35,7 @@ class WeaselTemplateEngine(private val classLoader: ClassLoader) {
         } else {
             val path = Paths.get(classLoader.getResource(templateName).toURI())
             val lines = Files.lines(path)
-            val tokens = lexer.lex(lines)
+            val tokens = lexer.tokenize(lines)
             val templates = parser.parse(tokens)
             val newTemplate = Template(templateName, templates)
             templateCache[templateName] = newTemplate

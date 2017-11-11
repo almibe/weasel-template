@@ -27,7 +27,7 @@ class WeaselTemplateLexer {
             val lineNumber: Int = 0
     )
 
-    fun lex(lines: Stream<String>): List<Token> {
+    fun tokenize(lines: Stream<String>): List<Token> {
         val instanceValues = LexerInstanceValues()
         lines.forEach { line: String ->
             val iterator = line.toCharArray().iterator()

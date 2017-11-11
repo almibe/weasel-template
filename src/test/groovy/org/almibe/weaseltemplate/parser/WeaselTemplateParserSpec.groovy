@@ -76,7 +76,7 @@ class WeaselTemplateParserSpec extends Specification {
                 "  <?include 'login.wt'>",
                 "<?endif>"
         ].stream()
-        List<Token> tokens = templateLexer.lex(statement)
+        List<Token> tokens = templateLexer.tokenize(statement)
         when:
         List<SubTemplate> result = templateParser.parse(tokens)
         then:
