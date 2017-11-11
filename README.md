@@ -3,9 +3,9 @@ Weasel Template
 
 *This project is still under development and isn't in a usable state yet.*
 
-A minimalist template engine for the JVM based on JSON &amp; implemented in Kotlin.
+Weasel Template is a minimalist template engine for the JVM based on JSON &amp; implemented in Kotlin.
 Every other JVM templating library contains a very large number of features that aren't needed for
-very simple use cases like handling initial server side rendering of webpages that use client side
+very simple use cases like handling the initial server side rendering of webpages that use client side
 javascript for most user interaction.  This is the use case that Weasel Template was created to
 handle.  If you need more features than what Weasel Template provides there are over a dozen
 much more feature laden templating libraries that exist for the JVM.
@@ -27,7 +27,7 @@ much more feature laden templating libraries that exist for the JVM.
 - `<?end each>` - closes the most recently opened each block
 - `<?include 'templateName' arg>` - include the following template and pass arg as the data model (arg is optional, if it isn't present then data is an empty object)
 
-## Example
+## Example Template
 
 Template files are regular text files with Weasel Template markup wrapped in angle brackets that start with a single ?.
 
@@ -44,20 +44,33 @@ Template files are regular text files with Weasel Template markup wrapped in ang
 
 <ul>
 <?each insults as insult>
-  <li><?user.name> you are <?insult></li>
+  <li><?user.name> you <?insult>!</li>
 <?end each>
 </ul>
 ```
 
+Below is a sample JSON document that could be used with the above template.
+
+```json
+{
+  "user" : {
+    "isAdmin" : true,
+    "isRegularUser" : false,
+    "name" : "Pat"
+  }
+  "insults" : ["are a hamster", "smell of elderberries"]
+}
+```
+
 ## Kotlin API
 
-The following code example demonstrates the only two public methods and single constructor that
+The following code example demonstrates the two public methods and single constructor that
 Weasel Template supplies.  All template files are loaded from the class loader passed into
-WeaselTemplateEngine's constructor.
+WeaselTemplateEngine's constructor.  Types are of coarse just there for the sake of documentation.
 
 ```kotlin
 val engine = WeaselTemplateEngine(this.javaClass.classLoader) //cache is only in use if engine instance is reused
-val data = createJsonObject()
+val data: JsonObject = createJsonObject()
 val result: String = engine.processTemplate('templatename.wt', data)
 engine.clearCache() //delete cached templates, you probably won't need to call this often/ever
 ```
