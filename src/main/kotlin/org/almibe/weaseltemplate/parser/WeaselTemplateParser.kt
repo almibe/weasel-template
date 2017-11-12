@@ -26,13 +26,17 @@ class WeaselTemplateParser {
         fun createSubTemplate(): IfSubTemplate = IfSubTemplate(conditionalSubTemplates, elseSubTemplate)
     }
 
-    private data class IfElseSubTemplateBuilder(val conditionSelector: String,
-                                                val content: MutableList<SubTemplate> = mutableListOf()) {
-        fun createSubTemplate(): ConditionalSubTemplate = ConditionalSubTemplate(conditionSelector, content)
+    private interface ConditionalSubTemplateBuilder {
+        fun createSubTemplate(): SubTemplate
     }
 
-    private data class ElseSubTemplateBuilder(val content: MutableList<SubTemplate> = mutableListOf()) {
-        fun createSubTemplate(): ElseSubTemplate = ElseSubTemplate(content)
+    private data class IfElseSubTemplateBuilder(val conditionSelector: String,
+                                                val content: MutableList<SubTemplate> = mutableListOf()): ConditionalSubTemplateBuilder {
+        override fun createSubTemplate(): ConditionalSubTemplate = ConditionalSubTemplate(conditionSelector, content)
+    }
+
+    private data class ElseSubTemplateBuilder(val content: MutableList<SubTemplate> = mutableListOf()): ConditionalSubTemplateBuilder {
+        override fun createSubTemplate(): ElseSubTemplate = ElseSubTemplate(content)
     }
 
     private data class EachSubTemplateBuilder(val listSelector: String,
@@ -45,7 +49,7 @@ class WeaselTemplateParser {
             val subTemplates: MutableList<SubTemplate> = mutableListOf(),
             val lineNumber: Int = 0,
             val ifElseBlockSubTemplateBuilders: Deque<IfElseBlockSubTemplateBuilder> = ArrayDeque(),
-            val ifElseSubTemplateBuilders: Deque<IfElseSubTemplateBuilder> = ArrayDeque(),
+            val conditionalSubTemplateBuilders: Deque<ConditionalSubTemplateBuilder> = ArrayDeque(),
             val elseSubTemplateBuilders: Deque<ElseSubTemplateBuilder> = ArrayDeque(),
             val eachSubTemplateBuilders: Deque<EachSubTemplateBuilder> = ArrayDeque()
     )
@@ -84,19 +88,19 @@ class WeaselTemplateParser {
         instanceValues.ifElseBlockSubTemplateBuilders.push(ifSubTemplateBuilder)
 
         val conditionSubTemplateBuilder = IfElseSubTemplateBuilder(token.condition)
-        instanceValues.ifElseSubTemplateBuilders.push(conditionSubTemplateBuilder)
+        instanceValues.conditionalSubTemplateBuilders.push(conditionSubTemplateBuilder)
     }
 
     private fun handleElseIfToken(token: ElseIfToken, tokens: Iterator<Token>, instanceValues: ParserInstanceValues) {
-        val previousBuilder = instanceValues.ifElseSubTemplateBuilders.pop()
+        val previousBuilder = instanceValues.conditionalSubTemplateBuilders.pop()
         instanceValues.subTemplates.add(previousBuilder.createSubTemplate())
 
         val conditionSubTemplateBuilder = IfElseSubTemplateBuilder(token.condition)
-        instanceValues.ifElseSubTemplateBuilders.push(conditionSubTemplateBuilder)
+        instanceValues.conditionalSubTemplateBuilders.push(conditionSubTemplateBuilder)
     }
 
     private fun handleElseToken(token: ElseToken, tokens: Iterator<Token>, instanceValues: ParserInstanceValues) {
-        val previousBuilder = instanceValues.ifElseSubTemplateBuilders.pop()
+        val previousBuilder = instanceValues.conditionalSubTemplateBuilders.pop()
         instanceValues.subTemplates.add(previousBuilder.createSubTemplate())
 
         val elseSubTemplateBuilder = ElseSubTemplateBuilder()
@@ -104,7 +108,7 @@ class WeaselTemplateParser {
     }
 
     private fun handleEndIfToken(token: EndIfToken, tokens: Iterator<Token>, instanceValues: ParserInstanceValues) {
-        val previousBuilder = instanceValues.ifElseSubTemplateBuilders.pop()
+        val previousBuilder = instanceValues.conditionalSubTemplateBuilders.pop()
         instanceValues.subTemplates.add(previousBuilder.createSubTemplate())
 
         val previousIfBuilder = instanceValues.ifElseBlockSubTemplateBuilders.pop()
