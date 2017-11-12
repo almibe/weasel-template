@@ -45,7 +45,7 @@ data class ScalarSubTemplate(val selector: String): SubTemplate {
     }
 }
 
-data class IfSubTemplate(val conditionTemplates: List<ConditionalSubTemplate>, val elseTemplate: ElseSubTemplate?): SubTemplate {
+data class IfElseBlockSubTemplate(val conditionTemplates: List<IfElseSubTemplate>, val elseTemplate: ElseSubTemplate?): SubTemplate {
     override fun apply(data: JsonObject, stringBuilder: StringBuilder) {
         conditionTemplates.forEach { conditionTemplate ->
             if (conditionTemplate.testCondition(data)) {
@@ -58,7 +58,9 @@ data class IfSubTemplate(val conditionTemplates: List<ConditionalSubTemplate>, v
     }
 }
 
-data class ConditionalSubTemplate(val conditionSelector: String, val content: List<SubTemplate>): SubTemplate {
+interface ConditionalSubTemplate: SubTemplate
+
+data class IfElseSubTemplate(val conditionSelector: String, val content: List<SubTemplate>): ConditionalSubTemplate {
     fun testCondition(data: JsonObject): Boolean {
         val names = conditionSelector.split(".")
         var current: JsonObject = data
@@ -77,7 +79,7 @@ data class ConditionalSubTemplate(val conditionSelector: String, val content: Li
     }
 }
 
-data class ElseSubTemplate(val content: List<SubTemplate>) : SubTemplate {
+data class ElseSubTemplate(val content: List<SubTemplate>) : ConditionalSubTemplate {
     override fun apply(data: JsonObject, stringBuilder: StringBuilder) {
         content.forEach { it.apply(data, stringBuilder) }
     }

@@ -62,7 +62,7 @@ class WeaselTemplateParserSpec extends Specification {
         when:
         List<SubTemplate> result = templateParser.parse(tokens)
         then:
-        result.size() == 1
+        result.size() == 2
     }
 
     def "test parsing nested if statements"() {
@@ -101,4 +101,5 @@ class WeaselTemplateParserSpec extends Specification {
     //TODO test parsing each
     //TODO test parsing nested each
     //TODO test parsing complex conditional + each
+    //TODO test parsing includes with and without arguments
 }
