@@ -99,15 +99,18 @@ class WeaselTemplateParser {
             throw RuntimeException("Unexpected value")
         }
 
-        instanceValues.subTemplates.add(previousBuilder.createSubTemplate())
-
         val conditionSubTemplateBuilder = IfElseSubTemplateBuilder(token.condition)
         instanceValues.conditionalSubTemplateBuilders.push(conditionSubTemplateBuilder)
     }
 
     private fun handleElseToken(token: ElseToken, tokens: Iterator<Token>, instanceValues: ParserInstanceValues) {
         val previousBuilder = instanceValues.conditionalSubTemplateBuilders.pop()
-        instanceValues.subTemplates.add(previousBuilder.createSubTemplate())
+        val ifElseBlock = instanceValues.ifElseBlockSubTemplateBuilders.peekFirst()
+        if(previousBuilder is IfElseSubTemplateBuilder) {
+            ifElseBlock.ifElseSubTemplates.add(previousBuilder.createSubTemplate())
+        } else {
+            throw RuntimeException("Unexpected value")
+        }
 
         val elseSubTemplateBuilder = ElseSubTemplateBuilder()
         instanceValues.conditionalSubTemplateBuilders.push(elseSubTemplateBuilder)
@@ -115,7 +118,12 @@ class WeaselTemplateParser {
 
     private fun handleEndIfToken(token: EndIfToken, tokens: Iterator<Token>, instanceValues: ParserInstanceValues) {
         val previousBuilder = instanceValues.conditionalSubTemplateBuilders.pop()
-        instanceValues.subTemplates.add(previousBuilder.createSubTemplate())
+        val ifElseBlock = instanceValues.ifElseBlockSubTemplateBuilders.peekFirst()
+        if(previousBuilder is IfElseSubTemplateBuilder) {
+            ifElseBlock.ifElseSubTemplates.add(previousBuilder.createSubTemplate())
+        } else {
+            throw RuntimeException("Unexpected value")
+        }
 
         val previousIfBuilder = instanceValues.ifElseBlockSubTemplateBuilders.pop()
         assert(previousIfBuilder is IfElseBlockSubTemplateBuilder)
