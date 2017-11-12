@@ -39,7 +39,9 @@ class WeaselTemplateParser {
         override fun createSubTemplate(): ElseSubTemplate = ElseSubTemplate(content)
     }
 
-    private data class EachSubTemplateBuilder(val listSelector: String, val itemName: String, val content: MutableList<SubTemplate>): SubTemplateBuilder {
+    private data class EachSubTemplateBuilder(val listSelector: String,
+                                              val itemName: String,
+                                              val content: MutableList<SubTemplate> = mutableListOf()): SubTemplateBuilder {
         override fun createSubTemplate(): EachSubTemplate = EachSubTemplate(listSelector, itemName, content)
     }
 
