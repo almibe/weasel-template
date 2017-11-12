@@ -35,7 +35,7 @@ class WeaselTemplateParser {
         override fun createSubTemplate(): ConditionalSubTemplate = ConditionalSubTemplate(conditionSelector, content)
     }
 
-    private data class ElseSubTemplateBuilder(val content: MutableList<SubTemplate>): SubTemplateBuilder {
+    private data class ElseSubTemplateBuilder(val content: MutableList<SubTemplate> = mutableListOf()): SubTemplateBuilder {
         override fun createSubTemplate(): ElseSubTemplate = ElseSubTemplate(content)
     }
 
@@ -89,23 +89,38 @@ class WeaselTemplateParser {
     }
 
     private fun handleElseIfToken(token: ElseIfToken, tokens: Iterator<Token>, instanceValues: ParserInstanceValues) {
-        TODO()
+        val previousBuilder = instanceValues.subTemplateBuilders.pop()
+        instanceValues.subTemplates.add(previousBuilder.createSubTemplate())
+
+        val conditionSubTemplateBuilder = ConditionalSubTemplateBuilder(token.condition)
+        instanceValues.subTemplateBuilders.push(conditionSubTemplateBuilder)
     }
 
     private fun handleElseToken(token: ElseToken, tokens: Iterator<Token>, instanceValues: ParserInstanceValues) {
-        TODO()
+        val previousBuilder = instanceValues.subTemplateBuilders.pop()
+        instanceValues.subTemplates.add(previousBuilder.createSubTemplate())
+
+        val elseSubTemplateBuilder = ElseSubTemplateBuilder()
+        instanceValues.subTemplateBuilders.push(elseSubTemplateBuilder)
     }
 
     private fun handleEndIfToken(token: EndIfToken, tokens: Iterator<Token>, instanceValues: ParserInstanceValues) {
-        TODO()
+        val previousBuilder = instanceValues.subTemplateBuilders.pop()
+        instanceValues.subTemplates.add(previousBuilder.createSubTemplate())
+
+        val previousIfBuilder = instanceValues.subTemplateBuilders.pop()
+        assert(previousIfBuilder is IfSubTemplateBuilder)
+        instanceValues.subTemplates.add(previousIfBuilder.createSubTemplate())
     }
 
     private fun handleEachToken(token: EachToken, tokens: Iterator<Token>, instanceValues: ParserInstanceValues) {
+        //create and push each sub template builder
         TODO()
         //instanceValues.subTemplates.add(EachSubTemplate(tagTokens.component2(), tagTokens.component4()))
     }
 
     private fun handleEndEachToken(token: EndEachToken, tokens: Iterator<Token>, instanceValues: ParserInstanceValues) {
+        //pop build and append previous each sub template builder
         TODO()
     }
 
