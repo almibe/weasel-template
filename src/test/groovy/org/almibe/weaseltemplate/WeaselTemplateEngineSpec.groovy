@@ -76,20 +76,22 @@ class WeaselTemplateEngineSpec extends Specification {
         then:
         helper.contentCompare(expectedResult, result)
     }
-//
-//    def "test passing list data to a list references"() {
-//    }
-//
-//    def "expect an exception when you pass map or singular values to list references"() {
-//
-//    }
-//
-//    def "test passing map data to a map references"() {
-//    }
-//
-//    def "expect an exception when you pass list or singular values to map references"() {
-//    }
-//
-//    def "support includes"() {
-//    }
+
+    def "support list iteration"() {
+        given:
+        String expectedResult = new File("src/test/resources/04-list.result").text
+        when:
+        String result = templateEngine.processTemplate("04-list.test", data)
+        then:
+        helper.contentCompare(expectedResult, result)
+    }
+
+    def "support includes"() {
+        given:
+        String expectedResult = new File("src/test/resources/05-includes.result").text
+        when:
+        String result = templateEngine.processTemplate("05-includes.test", data)
+        then:
+        helper.contentCompare(expectedResult, result)
+    }
 }
