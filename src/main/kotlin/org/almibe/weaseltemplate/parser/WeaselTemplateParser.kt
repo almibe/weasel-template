@@ -74,11 +74,23 @@ class WeaselTemplateParser {
     }
 
     private fun handleTextToken(token: TextToken, instanceValues: ParserInstanceValues) {
-        instanceValues.subTemplates.add(TextSubTemplate(token.content))
+        val textSubTemplate = TextSubTemplate(token.content)
+        val currentState = instanceValues.subTemplateBuilders.peekFirst()
+        when (currentState) {
+            is IfElseSubTemplateBuilder -> currentState.content.add(textSubTemplate)
+            is ElseSubTemplateBuilder -> currentState.content.add(textSubTemplate)
+            else -> instanceValues.subTemplates.add(textSubTemplate)
+        }
     }
 
     private fun handleScalarToken(token: ScalarToken, instanceValues: ParserInstanceValues) {
-        instanceValues.subTemplates.add(ScalarSubTemplate(token.selector))
+        val scalarSubTemplate = ScalarSubTemplate(token.selector)
+        val currentState = instanceValues.subTemplateBuilders.peekFirst()
+        when (currentState) {
+            is IfElseSubTemplateBuilder -> currentState.content.add(scalarSubTemplate)
+            is ElseSubTemplateBuilder -> currentState.content.add(scalarSubTemplate)
+            else -> instanceValues.subTemplates.add(scalarSubTemplate)
+        }
     }
 
     private fun handleIfToken(token: IfToken, tokens: Iterator<Token>, instanceValues: ParserInstanceValues) {
