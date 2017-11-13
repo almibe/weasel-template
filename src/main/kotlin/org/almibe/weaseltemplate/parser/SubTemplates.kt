@@ -16,6 +16,7 @@
 
 package org.almibe.weaseltemplate.parser
 
+import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
 
@@ -101,13 +102,37 @@ data class ElseSubTemplate(val content: List<SubTemplate>) : ConditionalSubTempl
 }
 
 data class EachSubTemplate(val listSelector: String, val iteratorName: String, val content: List<SubTemplate>): SubTemplate { // EachSubTemplate("users", "user")
+    private fun selectList(data: JsonObject): JsonArray? {
+        val names = listSelector.split(".")
+        var current: JsonObject = data
+        val itr = names.iterator()
+        while (itr.hasNext()) {
+            val currentName = itr.next()
+            val element = current.get(currentName) ?: return null
+            if (itr.hasNext() && element.isJsonObject) {
+                current = element as JsonObject
+            } else if (!itr.hasNext() && element is JsonArray) {
+                return element
+            } else {
+                return null
+            }
+        }
+        return null
+    }
+
     override fun apply(data: JsonObject, stringBuilder: StringBuilder) {
-        TODO()
+        val list = selectList(data)
+        val dataCopy = data.deepCopy()
+        list?.forEach { item ->
+            dataCopy.add(iteratorName, item)
+            content.forEach { it.apply(dataCopy, stringBuilder) }
+        }
     }
 }
 
 data class IncludeSubTemplate(val fileName: String, val argumentSelector: String? = null): SubTemplate { // IncludeSubTemplate("adminTemplate.wt", "user")
     override fun apply(data: JsonObject, stringBuilder: StringBuilder) {
+        //
         TODO()
     }
 }

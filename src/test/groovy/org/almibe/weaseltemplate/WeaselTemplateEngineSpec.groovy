@@ -37,6 +37,12 @@ class WeaselTemplateEngineSpec extends Specification {
         nested.addProperty("boolean", true)
         data.add("nested", nested)
         data.addProperty("true", true)
+        def values = new JsonArray()
+        values.add(1)
+        values.add(2)
+        values.add(true)
+        values.add("false")
+        data.add("values", values)
     }
 
     def "handle plain files"() {
