@@ -109,8 +109,51 @@ class WeaselTemplateParserSpec extends Specification {
         result.size() == 3
     }
 
-    //TODO test parsing each
-    //TODO test parsing nested each
-    //TODO test parsing complex conditional + each
-    //TODO test parsing includes with and without arguments
+    def "test parsing basic each"() {
+        given:
+        Stream<String> statement = ["<?each items as item><?item><?end each>"].stream()
+        List<Token> tokens = templateLexer.tokenize(statement)
+        when:
+        List<SubTemplate> result = templateParser.parse(tokens)
+        then:
+        result.size() == 2
+    }
+
+    def "test parsing nested each"() {
+        given:
+        Stream<String> statement = ["<?each items as item><?item><?each item.subItems as subItem><?subItem><?end each><?end each>"].stream()
+        List<Token> tokens = templateLexer.tokenize(statement)
+        when:
+        List<SubTemplate> result = templateParser.parse(tokens)
+        then:
+        result.size() == 2
+    }
+
+    def "test parsing nested complex each"() {
+        given:
+        Stream<String> statement = ["<?each items as item><?item><?each item.subItems as subItem><?if subItem.show><?subItem><?end if><?end each><?end each>"].stream()
+        List<Token> tokens = templateLexer.tokenize(statement)
+        when:
+        List<SubTemplate> result = templateParser.parse(tokens)
+        then:
+        result.size() == 2
+    }
+
+    def "test parsing includes with and without arguments"() {
+        given:
+        Stream<String> statement = [
+                "<?if user.isLoggedIn>",
+                "  <?if user.isAdmin><?include 'admin.wt'>",
+                "  <?elseif user.isMod><?include 'mod.wt'>",
+                "  <?else>Hello<?endif>",
+                "<?else>",
+                "  <?include 'login.wt'>",
+                "<?endif>"
+        ].stream()
+        List<Token> tokens = templateLexer.tokenize(statement)
+        when:
+        List<SubTemplate> result = templateParser.parse(tokens)
+        then:
+        result.size() == 2
+    }
 }
