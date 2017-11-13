@@ -52,10 +52,9 @@ data class IfElseBlockSubTemplate(val conditionTemplates: List<IfElseSubTemplate
             if (conditionTemplate.testCondition(data)) {
                 conditionTemplate.apply(data, stringBuilder)
                 return
-            } else {
-                elseTemplate?.apply(data, stringBuilder)
             }
         }
+        elseTemplate?.apply(data, stringBuilder)
     }
 }
 
