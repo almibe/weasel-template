@@ -79,7 +79,8 @@ class WeaselTemplateParser {
         when (currentState) {
             is IfElseSubTemplateBuilder -> currentState.content.add(textSubTemplate)
             is ElseSubTemplateBuilder -> currentState.content.add(textSubTemplate)
-            else -> instanceValues.subTemplates.add(textSubTemplate)
+            null -> instanceValues.subTemplates.add(textSubTemplate)
+            else -> throw RuntimeException("Unexpected value")
         }
     }
 
@@ -89,7 +90,8 @@ class WeaselTemplateParser {
         when (currentState) {
             is IfElseSubTemplateBuilder -> currentState.content.add(scalarSubTemplate)
             is ElseSubTemplateBuilder -> currentState.content.add(scalarSubTemplate)
-            else -> instanceValues.subTemplates.add(scalarSubTemplate)
+            null -> instanceValues.subTemplates.add(scalarSubTemplate)
+            else -> throw RuntimeException("Unexpected value")
         }
     }
 
@@ -144,7 +146,8 @@ class WeaselTemplateParser {
         when (currentState) {
             is IfElseSubTemplateBuilder -> currentState.content.add(previousIfBuilder.createSubTemplate())
             is ElseSubTemplateBuilder -> currentState.content.add(previousIfBuilder.createSubTemplate())
-            else -> instanceValues.subTemplates.add(previousIfBuilder.createSubTemplate())
+            null -> instanceValues.subTemplates.add(previousIfBuilder.createSubTemplate())
+            else -> throw RuntimeException("Unexpected value")
         }
     }
 
