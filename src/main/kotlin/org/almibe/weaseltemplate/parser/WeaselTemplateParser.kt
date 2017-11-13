@@ -119,12 +119,11 @@ class WeaselTemplateParser {
     private fun handleEndIfToken(token: EndIfToken, tokens: Iterator<Token>, instanceValues: ParserInstanceValues) {
         val previousBuilder = instanceValues.conditionalSubTemplateBuilders.pop()
         val ifElseBlock = instanceValues.ifElseBlockSubTemplateBuilders.peekFirst()
-        if(previousBuilder is IfElseSubTemplateBuilder) {
-            ifElseBlock.ifElseSubTemplates.add(previousBuilder.createSubTemplate())
-        } else {
-            throw RuntimeException("Unexpected value")
+        when (previousBuilder) {
+            is IfElseSubTemplateBuilder -> ifElseBlock.ifElseSubTemplates.add(previousBuilder.createSubTemplate())
+            is ElseSubTemplateBuilder -> ifElseBlock.elseSubTemplate = previousBuilder.createSubTemplate()
+            else -> throw RuntimeException("Unexpected value")
         }
-
         val previousIfBuilder = instanceValues.ifElseBlockSubTemplateBuilders.pop()
         assert(previousIfBuilder is IfElseBlockSubTemplateBuilder)
         instanceValues.subTemplates.add(previousIfBuilder.createSubTemplate())
