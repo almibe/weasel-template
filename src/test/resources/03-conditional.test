@@ -2,10 +2,11 @@ This should be visible
 <?if adminUser>
 Admin user
 <?else>
-Not and admin user
+Not an admin user
 <?end if>
 
 <?if name><?name><?end if>
+<?if void><?void><?end if>
 
 <?if nested>
   <?if nested.boolean>

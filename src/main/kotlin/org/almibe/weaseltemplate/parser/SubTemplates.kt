@@ -17,6 +17,7 @@
 package org.almibe.weaseltemplate.parser
 
 import com.google.gson.JsonObject
+import com.google.gson.JsonPrimitive
 
 interface SubTemplate {
     fun apply(data: JsonObject, stringBuilder: StringBuilder)
@@ -34,12 +35,12 @@ data class ScalarSubTemplate(val selector: String): SubTemplate {
         var current: JsonObject = data
         names.forEach {
             val element = current.get(it)
-            if (element.isJsonObject) {
+            if (element != null && element.isJsonObject) {
                 current = element as JsonObject
-            } else if (element.isJsonPrimitive && names.last() == it) {
+            } else if (element != null && element.isJsonPrimitive && names.last() == it) {
                 stringBuilder.append(element.asString)
             } else {
-                throw RuntimeException("Unexpected value")
+                throw RuntimeException("Unexpected value $selector")
             }
         }
     }
@@ -67,15 +68,30 @@ data class IfElseSubTemplate(val conditionSelector: String, val content: List<Su
         val itr = names.iterator()
         while (itr.hasNext()) {
             val currentName = itr.next()
-            val element = current.get(currentName)
+            val element = current.get(currentName) ?: return false
             if (itr.hasNext() && element.isJsonObject) {
                 current = element as JsonObject
-            } else return !element.isJsonObject
+            } else {
+                return when {
+                    element.isJsonObject -> true
+                    element.isJsonArray -> true
+                    element.isJsonNull -> false
+                    element.isJsonPrimitive -> checkPrimitive(element as JsonPrimitive)
+                    else -> throw RuntimeException("Unexpected value")
+                }
+            }
         }
         return false
     }
     override fun apply(data: JsonObject, stringBuilder: StringBuilder) {
         content.forEach { it.apply(data, stringBuilder) }
+    }
+    private fun checkPrimitive(value: JsonPrimitive): Boolean {
+        return if (value.isBoolean) {
+            value.asBoolean
+        } else {
+            true
+        }
     }
 }
 

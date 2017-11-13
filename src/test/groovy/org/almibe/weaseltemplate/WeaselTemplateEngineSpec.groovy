@@ -29,9 +29,14 @@ class WeaselTemplateEngineSpec extends Specification {
     def setup() {
         data.addProperty("name", "Alex")
         data.addProperty("age", 32)
+        data.addProperty("adminUser", true)
         def address = new JsonObject()
         address.addProperty("city", "Bloomington")
         data.add("address", address)
+        def nested = new JsonObject()
+        nested.addProperty("boolean", true)
+        data.add("nested", nested)
+        data.addProperty("true", true)
     }
 
     def "handle plain files"() {

@@ -141,7 +141,7 @@ class WeaselTemplateParser {
         instanceValues.subTemplateBuilders.pop()
         assert(previousIfBuilder is IfElseBlockSubTemplateBuilder)
 
-        appendSubTemplate(instanceValues, previousBuilder.createSubTemplate())
+        appendSubTemplate(instanceValues, previousIfBuilder.createSubTemplate())
     }
 
     private fun handleEachToken(token: EachToken, tokens: Iterator<Token>, instanceValues: ParserInstanceValues) {
