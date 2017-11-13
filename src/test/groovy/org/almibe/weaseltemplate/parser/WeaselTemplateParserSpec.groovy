@@ -65,22 +65,32 @@ class WeaselTemplateParserSpec extends Specification {
         result.size() == 2
     }
 
-    def "test parsing nested if statements"() {
+    def "test parsing simple nested if statements"() {
+        given:
+        Stream<String> statement = ["<?if cond1><?if cond2>True<?end if><?end if>"].stream()
+        List<Token> tokens = templateLexer.tokenize(statement)
+        when:
+        List<SubTemplate> result = templateParser.parse(tokens)
+        then:
+        result.size() == 2
+    }
+
+    def "test parsing complex nested if statements"() {
         given:
         Stream<String> statement = [
                 "<?if user.isLoggedIn>",
-                "  <?if user.isAdmin><?include 'admin.wt'>",
-                "  <?elseif user.isMod><?include 'mod.wt'>",
-                "  <?else>Hello<?endif>",
+                "  <?if user.isAdmin>Hello Admin ",
+                "  <?elseif user.isMod>Hello Mod ",
+                "  <?else>Hello <?end if><?user.name>",
                 "<?else>",
-                "  <?include 'login.wt'>",
-                "<?endif>"
+                "  Hello Anon",
+                "<?end if>"
         ].stream()
         List<Token> tokens = templateLexer.tokenize(statement)
         when:
         List<SubTemplate> result = templateParser.parse(tokens)
         then:
-        result.size() == 1
+        result.size() == 2
     }
 
     def "test parsing inline if"() {
@@ -98,6 +108,7 @@ class WeaselTemplateParserSpec extends Specification {
         then:
         result.size() == 3
     }
+
     //TODO test parsing each
     //TODO test parsing nested each
     //TODO test parsing complex conditional + each
