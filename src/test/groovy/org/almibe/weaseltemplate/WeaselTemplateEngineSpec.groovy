@@ -18,14 +18,8 @@ package org.almibe.weaseltemplate
 
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
-import org.almibe.weaseltemplate.parser.SubTemplate
-import org.almibe.weaseltemplate.parser.TextSubTemplate
-import org.almibe.weaseltemplate.parser.WeaselTemplateParser
 import spock.lang.Shared
 import spock.lang.Specification
-
-import java.nio.file.Files
-import java.nio.file.Paths
 
 class WeaselTemplateEngineSpec extends Specification {
     @Shared def templateEngine = new WeaselTemplateEngine(this.class.classLoader)
@@ -38,16 +32,6 @@ class WeaselTemplateEngineSpec extends Specification {
         def address = new JsonObject()
         address.addProperty("city", "Bloomington")
         data.add("address", address)
-    }
-
-    def "test basic tokenizing"() {
-        given:
-        WeaselTemplateParser parser = new WeaselTemplateParser()
-        when:
-        List<SubTemplate> tokens = parser.parse(Files.lines(Paths.get("src/test/resources/01-text.result")))
-        then:
-        tokens.size() == 1
-        tokens.first() instanceof TextSubTemplate
     }
 
     def "handle plain files"() {
