@@ -159,6 +159,6 @@ class WeaselTemplateParser {
     }
 
     private fun handleIncludeToken(token: IncludeToken, instanceValues: ParserInstanceValues) {
-        TODO()
+        appendSubTemplate(instanceValues, IncludeSubTemplate(token.name, token.argument))
     }
 }

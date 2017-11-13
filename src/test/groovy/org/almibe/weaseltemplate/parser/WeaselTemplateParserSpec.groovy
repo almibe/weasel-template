@@ -145,10 +145,10 @@ class WeaselTemplateParserSpec extends Specification {
                 "<?if user.isLoggedIn>",
                 "  <?if user.isAdmin><?include 'admin.wt'>",
                 "  <?elseif user.isMod><?include 'mod.wt'>",
-                "  <?else>Hello<?endif>",
+                "  <?else>Hello<?end if>",
                 "<?else>",
                 "  <?include 'login.wt'>",
-                "<?endif>"
+                "<?end if>"
         ].stream()
         List<Token> tokens = templateLexer.tokenize(statement)
         when:
