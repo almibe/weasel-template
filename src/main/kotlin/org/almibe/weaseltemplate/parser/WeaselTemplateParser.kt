@@ -73,26 +73,24 @@ class WeaselTemplateParser {
         return instanceValues.subTemplates
     }
 
-    private fun handleTextToken(token: TextToken, instanceValues: ParserInstanceValues) {
-        val textSubTemplate = TextSubTemplate(token.content)
+    private fun appendSubTemplate(instanceValues: ParserInstanceValues, subTemplate: SubTemplate) {
         val currentState = instanceValues.subTemplateBuilders.peekFirst()
         when (currentState) {
-            is IfElseSubTemplateBuilder -> currentState.content.add(textSubTemplate)
-            is ElseSubTemplateBuilder -> currentState.content.add(textSubTemplate)
-            null -> instanceValues.subTemplates.add(textSubTemplate)
+            is IfElseSubTemplateBuilder -> currentState.content.add(subTemplate)
+            is ElseSubTemplateBuilder -> currentState.content.add(subTemplate)
+            null -> instanceValues.subTemplates.add(subTemplate)
             else -> throw RuntimeException("Unexpected value")
         }
     }
 
+    private fun handleTextToken(token: TextToken, instanceValues: ParserInstanceValues) {
+        val textSubTemplate = TextSubTemplate(token.content)
+        appendSubTemplate(instanceValues, textSubTemplate)
+    }
+
     private fun handleScalarToken(token: ScalarToken, instanceValues: ParserInstanceValues) {
         val scalarSubTemplate = ScalarSubTemplate(token.selector)
-        val currentState = instanceValues.subTemplateBuilders.peekFirst()
-        when (currentState) {
-            is IfElseSubTemplateBuilder -> currentState.content.add(scalarSubTemplate)
-            is ElseSubTemplateBuilder -> currentState.content.add(scalarSubTemplate)
-            null -> instanceValues.subTemplates.add(scalarSubTemplate)
-            else -> throw RuntimeException("Unexpected value")
-        }
+        appendSubTemplate(instanceValues, scalarSubTemplate)
     }
 
     private fun handleIfToken(token: IfToken, tokens: Iterator<Token>, instanceValues: ParserInstanceValues) {
@@ -142,24 +140,21 @@ class WeaselTemplateParser {
         instanceValues.subTemplateBuilders.pop()
         assert(previousIfBuilder is IfElseBlockSubTemplateBuilder)
 
-        val currentState = instanceValues.subTemplateBuilders.peekFirst()
-        when (currentState) {
-            is IfElseSubTemplateBuilder -> currentState.content.add(previousIfBuilder.createSubTemplate())
-            is ElseSubTemplateBuilder -> currentState.content.add(previousIfBuilder.createSubTemplate())
-            null -> instanceValues.subTemplates.add(previousIfBuilder.createSubTemplate())
-            else -> throw RuntimeException("Unexpected value")
-        }
+        appendSubTemplate(instanceValues, previousBuilder.createSubTemplate())
     }
 
     private fun handleEachToken(token: EachToken, tokens: Iterator<Token>, instanceValues: ParserInstanceValues) {
-        //create and push each sub template builder
-        TODO()
-        //instanceValues.subTemplates.add(EachSubTemplate(tagTokens.component2(), tagTokens.component4()))
+        val eachSubTemplateBuilder = EachSubTemplateBuilder(token.listSelector, token.iteratorName)
+        instanceValues.subTemplateBuilders.push(eachSubTemplateBuilder)
     }
 
     private fun handleEndEachToken(token: EndEachToken, tokens: Iterator<Token>, instanceValues: ParserInstanceValues) {
-        //pop build and append previous each sub template builder
-        TODO()
+        val previousEachSubTemplateBuilder = instanceValues.subTemplateBuilders.pop()
+        if (previousEachSubTemplateBuilder is EachSubTemplateBuilder) {
+            appendSubTemplate(instanceValues, previousEachSubTemplateBuilder.createSubTemplate())
+        } else {
+            throw RuntimeException("Unexpected value")
+        }
     }
 
     private fun handleIncludeToken(token: IncludeToken, instanceValues: ParserInstanceValues) {
