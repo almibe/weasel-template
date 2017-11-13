@@ -78,6 +78,7 @@ class WeaselTemplateParser {
         when (currentState) {
             is IfElseSubTemplateBuilder -> currentState.content.add(subTemplate)
             is ElseSubTemplateBuilder -> currentState.content.add(subTemplate)
+            is EachSubTemplateBuilder -> currentState.content.add(subTemplate)
             null -> instanceValues.subTemplates.add(subTemplate)
             else -> throw RuntimeException("Unexpected value")
         }
