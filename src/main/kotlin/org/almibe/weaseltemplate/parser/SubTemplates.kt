@@ -135,9 +135,9 @@ data class IncludeSubTemplate(val engine: WeaselTemplateEngine, val fileName: St
     override fun apply(data: JsonObject, stringBuilder: StringBuilder) {
         val argument = selectArgument(data)
         if (argument != null) {
-            TODO("process template with argument")
+            stringBuilder.append(engine.processTemplate(fileName, argument))
         } else {
-            TODO("process template without argument")
+            stringBuilder.append(engine.processTemplate(fileName, JsonObject()))
         }
     }
 
