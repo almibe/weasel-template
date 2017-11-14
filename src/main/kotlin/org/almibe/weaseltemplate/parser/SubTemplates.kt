@@ -133,14 +133,11 @@ data class EachSubTemplate(val listSelector: String, val iteratorName: String, v
 data class IncludeSubTemplate(val fileName: String, val argumentSelector: String? = null): SubTemplate {
     override fun apply(data: JsonObject, stringBuilder: StringBuilder) {
         val argument = selectArgument(data)
-        val result: String = if (argument != null) {
-
-            //TODO if argumentSelect != null select JsonObject as argument
-            TODO("process template with argument if it isn't null")
-        } else {
+        if (argument != null) {
             TODO("process template with argument")
+        } else {
+            TODO("process template without argument")
         }
-        stringBuilder.append(result)
     }
 
     private fun selectArgument(data: JsonObject): JsonObject? {
