@@ -16,10 +16,11 @@
 
 package org.almibe.weaseltemplate.parser
 
+import org.almibe.weaseltemplate.WeaselTemplateEngine
 import org.almibe.weaseltemplate.lexer.*
 import java.util.*
 
-class WeaselTemplateParser {
+class WeaselTemplateParser(val engine: WeaselTemplateEngine) {
 
     private interface SubTemplateBuilder {
         fun createSubTemplate(): SubTemplate
@@ -159,6 +160,6 @@ class WeaselTemplateParser {
     }
 
     private fun handleIncludeToken(token: IncludeToken, instanceValues: ParserInstanceValues) {
-        appendSubTemplate(instanceValues, IncludeSubTemplate(token.name, token.argument))
+        appendSubTemplate(instanceValues, IncludeSubTemplate(engine, token.name, token.argument))
     }
 }

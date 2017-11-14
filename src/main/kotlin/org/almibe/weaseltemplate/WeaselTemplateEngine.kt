@@ -25,7 +25,7 @@ import java.nio.file.Paths
 
 class WeaselTemplateEngine(private val classLoader: ClassLoader) {
     private val templateCache: MutableMap<String, Template> = mutableMapOf()
-    private val parser = WeaselTemplateParser()
+    private val parser = WeaselTemplateParser(this)
     private val lexer = WeaselTemplateLexer()
 
     fun processTemplate(templateName: String, data: JsonObject): String {

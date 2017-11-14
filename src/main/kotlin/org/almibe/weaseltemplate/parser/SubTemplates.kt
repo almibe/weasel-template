@@ -19,6 +19,7 @@ package org.almibe.weaseltemplate.parser
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
+import org.almibe.weaseltemplate.WeaselTemplateEngine
 
 interface SubTemplate {
     fun apply(data: JsonObject, stringBuilder: StringBuilder)
@@ -130,7 +131,7 @@ data class EachSubTemplate(val listSelector: String, val iteratorName: String, v
     }
 }
 
-data class IncludeSubTemplate(val fileName: String, val argumentSelector: String? = null): SubTemplate {
+data class IncludeSubTemplate(val engine: WeaselTemplateEngine, val fileName: String, val argumentSelector: String? = null): SubTemplate {
     override fun apply(data: JsonObject, stringBuilder: StringBuilder) {
         val argument = selectArgument(data)
         if (argument != null) {
