@@ -102,6 +102,15 @@ data class ElseSubTemplate(val content: List<SubTemplate>) : ConditionalSubTempl
 }
 
 data class EachSubTemplate(val listSelector: String, val iteratorName: String, val content: List<SubTemplate>): SubTemplate {
+    override fun apply(data: JsonObject, stringBuilder: StringBuilder) {
+        val list = selectList(data)
+        val dataCopy = data.deepCopy()
+        list?.forEach { item ->
+            dataCopy.add(iteratorName, item)
+            content.forEach { it.apply(dataCopy, stringBuilder) }
+        }
+    }
+
     private fun selectList(data: JsonObject): JsonArray? {
         val names = listSelector.split(".")
         var current: JsonObject = data
@@ -119,18 +128,21 @@ data class EachSubTemplate(val listSelector: String, val iteratorName: String, v
         }
         return null
     }
-
-    override fun apply(data: JsonObject, stringBuilder: StringBuilder) {
-        val list = selectList(data)
-        val dataCopy = data.deepCopy()
-        list?.forEach { item ->
-            dataCopy.add(iteratorName, item)
-            content.forEach { it.apply(dataCopy, stringBuilder) }
-        }
-    }
 }
 
 data class IncludeSubTemplate(val fileName: String, val argumentSelector: String? = null): SubTemplate {
+    override fun apply(data: JsonObject, stringBuilder: StringBuilder) {
+        val argument = selectArgument(data)
+        val result: String = if (argument != null) {
+
+            //TODO if argumentSelect != null select JsonObject as argument
+            TODO("process template with argument if it isn't null")
+        } else {
+            TODO("process template with argument")
+        }
+        stringBuilder.append(result)
+    }
+
     private fun selectArgument(data: JsonObject): JsonObject? {
         if (argumentSelector == null) {
             return null
@@ -151,17 +163,5 @@ data class IncludeSubTemplate(val fileName: String, val argumentSelector: String
             }
             return null
         }
-    }
-
-    override fun apply(data: JsonObject, stringBuilder: StringBuilder) {
-        val argument = selectArgument(data)
-        val result: String = if (argument != null) {
-
-            //TODO if argumentSelect != null select JsonObject as argument
-            TODO("process template with argument if it isn't null")
-        } else {
-            TODO("process template with argument")
-        }
-        stringBuilder.append(result)
     }
 }
