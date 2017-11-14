@@ -1,1 +1,0 @@
-Hello <?if user><?user.name><?else>Anon<?end if>!

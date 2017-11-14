@@ -1,5 +1,5 @@
-<?include 'fragments/header.wt' user>
+<?include header.wt user>
 
 This is the body!
 
-<?include 'fragments/footer.wt'>
+<?include footer.wt>
