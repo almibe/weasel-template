@@ -27,6 +27,9 @@ class WeaselTemplateEngineSpec extends Specification {
     @Shared Helper helper = new Helper()
 
     def setup() {
+        def user = new JsonObject()
+        user.addProperty("name", "Alex")
+        data.add("user", user)
         data.addProperty("name", "Alex")
         data.addProperty("age", 32)
         data.addProperty("adminUser", true)
