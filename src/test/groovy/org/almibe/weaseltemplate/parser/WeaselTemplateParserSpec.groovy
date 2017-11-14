@@ -16,13 +16,14 @@
 
 package org.almibe.weaseltemplate.parser
 
+import org.almibe.weaseltemplate.WeaselTemplateEngine
 import org.almibe.weaseltemplate.lexer.*
 import spock.lang.Shared
 import spock.lang.Specification
 import java.util.stream.Stream
 
 class WeaselTemplateParserSpec extends Specification {
-    @Shared def templateParser = new WeaselTemplateParser()
+    @Shared def templateParser = new WeaselTemplateParser(new WeaselTemplateEngine(this.class.classLoader))
     @Shared def templateLexer = new WeaselTemplateLexer()
 
     def "test parsing simple text token"() {
