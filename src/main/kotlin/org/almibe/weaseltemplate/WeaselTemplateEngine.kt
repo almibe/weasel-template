@@ -20,8 +20,9 @@ import com.google.gson.JsonObject
 import org.almibe.weaseltemplate.lexer.WeaselTemplateLexer
 import org.almibe.weaseltemplate.parser.Template
 import org.almibe.weaseltemplate.parser.WeaselTemplateParser
-import java.nio.file.Files
-import java.nio.file.Paths
+import java.io.BufferedReader
+import java.io.InputStream
+import java.io.InputStreamReader
 
 class WeaselTemplateEngine(private val classLoader: ClassLoader) {
     private val templateCache: MutableMap<String, Template> = mutableMapOf()
@@ -33,8 +34,9 @@ class WeaselTemplateEngine(private val classLoader: ClassLoader) {
         return if (template != null) {
             template.apply(data)
         } else {
-            val path = Paths.get(classLoader.getResource(templateName).toURI())
-            val lines = Files.lines(path)
+            val stream: InputStream = classLoader.getResourceAsStream(templateName)
+            val reader = BufferedReader(InputStreamReader(stream))
+            val lines = reader.lines()
             val tokens = lexer.tokenize(lines)
             val templates = parser.parse(tokens)
             val newTemplate = Template(templateName, templates)
