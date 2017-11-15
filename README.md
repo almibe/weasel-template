@@ -1,8 +1,6 @@
 Weasel Template
 ===============
 
-*This project is still under development and isn't in a usable state yet.*
-
 Weasel Template is a minimalist template engine for the JVM based on JSON &amp; implemented in Kotlin.
 Every other JVM templating library contains a very large number of features that aren't needed for
 very simple use cases like handling the initial server side rendering of webpages that use client side
