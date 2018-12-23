@@ -46,6 +46,7 @@ class WeaselTemplateEngineSpec extends Specification {
         values.add(true)
         values.add("false")
         data.add("values", values)
+        data.addProperty("html", "Test this < & > ' \"")
     }
 
     def "handle plain files"() {
@@ -100,6 +101,15 @@ class WeaselTemplateEngineSpec extends Specification {
         String expectedResult = new File("src/test/resources/05-includes.result").text
         when:
         String result = templateEngine.processTemplate("05-includes.test", data)
+        then:
+        helper.contentCompare(expectedResult, result)
+    }
+
+    def "support escapes"() {
+        given:
+        String expectedResult = new File("src/test/resources/06-escapes.result").text
+        when:
+        String result = templateEngine.processTemplate("06-escapes.test", data)
         then:
         helper.contentCompare(expectedResult, result)
     }

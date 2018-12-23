@@ -40,7 +40,14 @@ data class ScalarSubTemplate(val selector: String): SubTemplate {
             if (element != null && element.isJsonObject) {
                 current = element as JsonObject
             } else if (element != null && element.isJsonPrimitive && names.last() == it) {
-                stringBuilder.append(element.asString)
+                val content = element.asString
+                        .replace("&", "&amp;")
+                        .replace("<", "&lt;")
+                        .replace(">", "&gt;")
+                        .replace("'", "&apos;")
+                        .replace("\"", "&quot;")
+
+                stringBuilder.append(content)
             } else {
                 throw RuntimeException("Unexpected value $selector")
             }

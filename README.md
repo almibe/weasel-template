@@ -11,7 +11,6 @@ much more feature laden templating libraries that exist for the JVM.
 ## Features
 - Use JSON for data model (via GSON)
 - Target HTML output
-- Play well with OSGi
 - Support a minimal number of features (conditionals, list iteration, and includes)
 - Example based testing via Spock
 
