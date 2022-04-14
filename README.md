@@ -1,3 +1,6 @@
+**Note this project is not longer being developed.**
+**See https://github.com/almibe/ligature-scala/weasel-template for current development in Scala 3.**
+
 Weasel Template
 ===============
 
